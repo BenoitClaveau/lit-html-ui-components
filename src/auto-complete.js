@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import { styleMap } from 'lit-html/directives/style-map';
-import "../core/app-icons.js";
+import "./app-icons.js";
 
 class AutoComplete extends LitElement {
 

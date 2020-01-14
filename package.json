@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/BenoitClaveau/lit-html-ui-components/issues"
   },
-  "homepage": "https://github.com/BenoitClaveau/lit-html-ui-components#readme"
+  "homepage": "https://github.com/BenoitClaveau/lit-html-ui-components#readme",
+  "dependencies": {
+    "@polymer/iron-icon": "latest",
+    "@polymer/iron-icons": "latest",
+    "lit-element": "latest",
+    "lit-html": "latest"
+  }
 }
