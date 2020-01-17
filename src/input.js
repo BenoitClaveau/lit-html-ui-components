@@ -85,15 +85,16 @@ export default class Input extends LitElement {
         const path = e.path || (e.composedPath && e.composedPath());
         const value = path[0].value;
         if (value != this.value) { // le text à changé
-            this.dispatchEvent(new CustomEvent('input-change', {
+            this.dispatchEvent(new CustomEvent('change', {
                 bubbles: true,
                 composed: true,
                 detail: { value }
             }));
             return;
         }
-        if (e.key == "enter") {
-            this.dispatchEvent(new CustomEvent('input-submit', {
+        if (e.key == "Enter") {
+            // ↵ dans l'input. J'envoie un évenement pour pouvoir séléctionner un élement.
+            this.dispatchEvent(new CustomEvent('submit', {
                 bubbles: true,
                 composed: true,
                 detail: { value }
@@ -102,7 +103,7 @@ export default class Input extends LitElement {
     };
 
     clear() {
-        this.dispatchEvent(new CustomEvent('input-clear', {
+        this.dispatchEvent(new CustomEvent('clear', {
             bubbles: true,
             composed: true,
             detail: {}

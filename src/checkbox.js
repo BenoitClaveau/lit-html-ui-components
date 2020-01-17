@@ -13,8 +13,6 @@ export default class Checkbox extends LitElement {
             :host {
                 --label-color: #eee;
             }
-            .container {
-            }
             slot {
                 font-family: Roboto;
                 font-size: 16px;
@@ -33,14 +31,6 @@ export default class Checkbox extends LitElement {
     }
 
     render() {
-        return html`
-            <div class="container">
-                ${ this.renderContent() }
-            </div>
-        `;
-    }
-
-    renderContent() {
         const {
             checked,
             onChange,

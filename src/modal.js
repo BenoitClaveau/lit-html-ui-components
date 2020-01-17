@@ -60,22 +60,20 @@ export default class Modal extends LitElement {
     }
 
     updated(changedProps) {
-        console.log("updated")
         if (changedProps.has("opened")) {
             this.onVisibleChanged(this.opened, changedProps.get("opened"));
 
             if (this.opened) {
                 window.requestAnimationFrame(() => {
-    
                     const dialogHeight = parseFloat(window.getComputedStyle(this.dialog).getPropertyValue("height"));
                     const { height: headerHeight } = this.header.getBoundingClientRect();
                     const { height: footerHeight } = this.footer.getBoundingClientRect();
 
-                    //this.scrollable.scrollTarget.style.overflow = "scroll";
+                    // this.scrollable.scrollTarget.style.overflow = "scroll";
 
+                    // bug fix paper-dialog-scrollable ne prend pas tout l'espace disponible
+                    // je calcule moi même cette espace.
                     this.scrollable.scrollTarget.style.maxHeight = this.scrollable.scrollTarget.style.height = (dialogHeight - headerHeight - footerHeight) + "px";
-
-                    //this.requestUpdate();
                 });
             }
         }

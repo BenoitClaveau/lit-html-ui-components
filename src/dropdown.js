@@ -80,7 +80,7 @@ export default class Dropdown extends LitElement {
     }
 
     onSelect(e, item, index) {
-        this.dispatchEvent(new CustomEvent("dropdown-select", {
+        this.dispatchEvent(new CustomEvent("select", {
             bubbles: true,
             composed: true,
             detail: {

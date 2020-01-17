@@ -66,12 +66,6 @@ export default class Button extends LitElement {
         `;
     }
 
-    // static get properties() {
-    //     return {
-    //         dropdown: Boolean,
-    //     }
-    // }
-
     render() {
         const { onmousedown } = this;
 
@@ -104,10 +98,11 @@ export default class Button extends LitElement {
 
     onmousedown(e) {
         this.createRipple(e);
-        const listerner = document.addEventListener("mouseup", () => {
-            document.removeEventListener("mouseup", listerner);
+        const onmouseup = (e) => {
+            document.removeEventListener("mouseup", onmouseup);
             this.cancelRipple();
-        })
+        };
+        document.addEventListener("mouseup", onmouseup);
     }
 
     cancelRipple() {
