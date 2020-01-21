@@ -7,6 +7,16 @@ export default class Button extends LitElement {
         return css`
             :host {
                 display: flex;
+
+                color: #000;
+                background-color: #f0f0f0;
+
+                font-family: Roboto;
+                font-size: 16px;
+                font-weight: 500;
+                text-decoration: none;
+
+                min-height: 36px;
             }
             button {
                 flex: 1 0 auto;
@@ -18,13 +28,8 @@ export default class Button extends LitElement {
                 align-items: center;
                 justify-content: center;
 
-                min-height: 36px;
-
-                font-family: Roboto;
-                font-size: 16px;
-                font-weight: 500;
-                text-decoration: none;
                 
+
                 cursor: pointer;
 
                 user-select: none;
@@ -33,7 +38,7 @@ export default class Button extends LitElement {
 
                 position: relative;
 
-                background-color: #f0f0f0;
+                background-color: transparent;
             }
             [disabled] {
                 opacity: 0.6;
@@ -69,19 +74,34 @@ export default class Button extends LitElement {
     render() {
         const { onmousedown } = this;
 
+        // je calcule le style de host pour l'appliquer au bouton.
+        // le css host sera donc appliqué au boutton
+        const {
+            height,
+            minHeight,
+            width,
+            color,
+            backgroundColor,
+            fontFamily,
+            fontSize,
+            fontWeight,
+        } = getComputedStyle(this);
+        
+        const styles = {
+            height,
+            minHeight,
+            width,
+            color,
+            backgroundColor,
+            fontFamily,
+            fontSize,
+            fontWeight,
+        };
+
         return html`
             <button
                 @mousedown="${onmousedown}"
-                style="${styleMap({
-                    width: this.style.width,
-                    height: this.style.height,
-                    color: this.style.color,
-                    backgroundColor: this.style.backgroundColor,
-                    fontSize: this.style.fontSize,
-                    fontWeight: this.style.fontWeight,
-                    borderRadius: this.style.borderRadius,
-                    borderWidth: this.style.borderWidth,
-                })}"
+                style="${styleMap(styles)}"
             >
                 ${ this.renderContent()}
             </button>

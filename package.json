@@ -1,11 +1,8 @@
 {
   "name": "lit-html-ui-components",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "UI components for React Native",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BenoitClaveau/lit-html-ui-components.git"
@@ -27,5 +24,8 @@
     "@polymer/iron-icons": "latest",
     "lit-element": "latest",
     "lit-html": "latest"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

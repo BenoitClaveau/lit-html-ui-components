@@ -25,24 +25,29 @@ export default class Dialog extends Modal {
                     padding: 8px;
                     margin: 0;
                     justify-content: space-between;
+                    align-items: center;
+                }
+                footer {
+                    margin: 0;
+                    padding: 0;
+
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
+                }
+                footer > * {
+                    margin: 8px;
+                }
+                footer > *:last-child {
+                    margin-right: 24px;
                 }
             `
         ];
     }
 
-    static get properties() {
-        return {
-            ...super.properties,
-            renderBody: Function,
-            renderFooter: Function,
-        }
-    }
-
     renderHeader() {
         return html`
-            <div>
-                ${this.renderTitle()}
-            </div>
+            ${this.renderTitle()}
             <ui-icon
                 icon="close"
                 height="24px"

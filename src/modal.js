@@ -32,9 +32,9 @@ export default class Modal extends LitElement {
         return html`
             <paper-dialog 
                 style="${styleMap({
-            width: this.width,
-            height: this.height
-        })}"
+                    width: this.width,
+                    height: this.height
+                })}"
                 modal
                 @iron-overlay-opened="${this.patchOverlay}"
                 @iron-overlay-closed="${this.closeHandler}"
@@ -68,12 +68,13 @@ export default class Modal extends LitElement {
                     const dialogHeight = parseFloat(window.getComputedStyle(this.dialog).getPropertyValue("height"));
                     const { height: headerHeight } = this.header.getBoundingClientRect();
                     const { height: footerHeight } = this.footer.getBoundingClientRect();
+                    const computedStyle = window.getComputedStyle(this.scrollable);
 
                     // this.scrollable.scrollTarget.style.overflow = "scroll";
 
                     // bug fix paper-dialog-scrollable ne prend pas tout l'espace disponible
                     // je calcule moi même cette espace.
-                    this.scrollable.scrollTarget.style.maxHeight = this.scrollable.scrollTarget.style.height = (dialogHeight - headerHeight - footerHeight) + "px";
+                    this.scrollable.scrollTarget.style.maxHeight = this.scrollable.scrollTarget.style.height = (dialogHeight - headerHeight - footerHeight - parseFloat(computedStyle.getPropertyValue("padding-top")) - parseFloat(computedStyle.getPropertyValue("padding-bottom"))) + "px";
                 });
             }
         }
