@@ -6,22 +6,15 @@ export default class Dropdown extends LitElement {
     static get styles() {
         return css`
             .container {
-                position: absolute;
+                position: fixed;
                 z-index: 99;
                 overflow: hidden;
                 margin-top: 4px;
                 border-radius: 4px;
-                top: 100%;
-                left: 0;
-                right: 0;
-
                 max-height: 400px;
-                overflow-y: auto;
+                overflow: auto;
             }
             .container > * {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
                 padding: 6px 8px;
                 cursor: pointer;
                 background-color: #fff;
@@ -38,15 +31,9 @@ export default class Dropdown extends LitElement {
     static get properties() {
         return {
             items: Array,
-            activeIndex: Number
+            activeIndex: Number,
         }
     }
-
-    // async updated(changedProps) {
-    //     if (changedProps.has('suggestions')) {
-    //         this.activeSuggestion = 0;
-    //     }
-    // }
 
     render() {
         return html`

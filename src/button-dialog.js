@@ -5,8 +5,16 @@ export default class ButtonDialog extends LitElement {
 
     static get properties() {
         return {
-            opened: Boolean
+            opened: Boolean,
+            dialogWidth: String,
+            dialogHeight: String,
         }
+    }
+
+    constructor() {
+        super();
+        this.dialogWidth = "95vw";
+        this.dialogHeight = "95vh";
     }
 
     render() {
@@ -30,8 +38,8 @@ export default class ButtonDialog extends LitElement {
     renderDialog() {
         return html`
             <ui-dialog
-                width="90vw"
-                height="90vh"
+                width=${this.dialogWidth}
+                height=${this.dialogHeight}
                 .opened=${this.opened}
                 .renderBody=${() => this.renderDialogBody()}
                 .renderFooter=${() => this.renderDialogFooter()}
@@ -41,10 +49,12 @@ export default class ButtonDialog extends LitElement {
     }
 
     onDialogClose(e) {
+        e.stopPropagation();
         this.opened = false;
     }
 
     onButtonClick(e) {
+        e.stopPropagation();
         this.opened = true;
     }
 

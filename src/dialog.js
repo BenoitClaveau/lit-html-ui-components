@@ -11,14 +11,6 @@ export default class Dialog extends Modal {
         return [
             super.styles,
             css`
-                paper-dialog {
-                    margin: 0;
-                    padding: 0;
-                }
-                paper-dialog > * {
-                    margin: 0;
-                    padding: 0;
-                }
                 header {
                     display: flex;
                     flex-direction: row;

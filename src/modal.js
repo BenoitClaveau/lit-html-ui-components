@@ -8,7 +8,13 @@ export default class Modal extends LitElement {
     static get styles() {
         return css`
             paper-dialog {
+                margin: 0;
+                padding: 0;
                 background-color: white;
+            }
+            paper-dialog > * {
+                margin: 0;
+                padding: 0;
             }
         `;
     }
@@ -24,6 +30,22 @@ export default class Modal extends LitElement {
     constructor() {
         super();
         this.opened = false;
+        this.resizeHandler = (e) => this._resizeHandler(e);
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        window.addEventListener('resize', this.resizeHandler);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        window.removeEventListener('resize', this.resizeHandler);
+    }
+
+    _resizeHandler(e) {
+        if (!this.dialog) return;
+        this.updateScrollableHeight();
     }
 
     render() {
@@ -32,21 +54,21 @@ export default class Modal extends LitElement {
         return html`
             <paper-dialog 
                 style="${styleMap({
-                    width: this.width,
-                    height: this.height
-                })}"
+            width: this.width,
+            height: this.height
+        })}"
                 modal
                 @iron-overlay-opened="${this.patchOverlay}"
                 @iron-overlay-closed="${this.closeHandler}"
             >
                 <header>
-                    ${ this.renderHeader && this.renderHeader()}
+                    ${ this.opened && this.renderHeader && this.renderHeader()}
                 </header>
                 <paper-dialog-scrollable>
-                    ${ this.renderBody()}
+                    ${ this.opened && this.renderBody()}
                 </paper-dialog-scrollable>
                 <footer>
-                    ${ this.renderFooter && this.renderFooter()}
+                    ${ this.opened && this.renderFooter && this.renderFooter()}
                 </footer>
             </paper-dialog>
         `;
@@ -57,29 +79,37 @@ export default class Modal extends LitElement {
         this.header = this.dialog.querySelector("header");
         this.scrollable = this.dialog.querySelector("paper-dialog-scrollable");
         this.footer = this.dialog.querySelector("footer");
+
+        const ro = new ResizeObserver(entries => {
+            this.updateScrollableHeight();
+        });
+
+        ro.observe(this.scrollable.scrollTarget);
+    }
+
+    updateScrollableHeight() {
+        const { y: dialogTop } = this.dialog.getBoundingClientRect();
+        const { height: headerHeight } = this.header.getBoundingClientRect();
+        const { height: footerHeight } = this.footer.getBoundingClientRect();
+        const { scrollHeight } = this.scrollable.scrollTarget;
+        const computedStyle = window.getComputedStyle(this.scrollable);
+        const availableScrollHeight = window.innerHeight - dialogTop - headerHeight - footerHeight - parseFloat(computedStyle.getPropertyValue("padding-top")) - parseFloat(computedStyle.getPropertyValue("padding-bottom"));
+        if (scrollHeight > availableScrollHeight) {
+            this.scrollable.scrollTarget.style.maxHeight = availableScrollHeight + "px";
+            this.scrollable.scrollTarget.style.height = availableScrollHeight + "px";
+        }
+        else {
+            this.scrollable.scrollTarget.style.maxHeight = scrollHeight + "px";
+            this.scrollable.scrollTarget.style.height = scrollHeight + "px";
+            
+        }
+        this.dialog.notifyResize();
     }
 
     updated(changedProps) {
         if (changedProps.has("opened")) {
             this.onVisibleChanged(this.opened, changedProps.get("opened"));
-
-            if (this.opened) {
-                window.requestAnimationFrame(() => {
-                    const dialogHeight = parseFloat(window.getComputedStyle(this.dialog).getPropertyValue("height"));
-                    const { height: headerHeight } = this.header.getBoundingClientRect();
-                    const { height: footerHeight } = this.footer.getBoundingClientRect();
-                    const computedStyle = window.getComputedStyle(this.scrollable);
-
-                    // this.scrollable.scrollTarget.style.overflow = "scroll";
-
-                    // bug fix paper-dialog-scrollable ne prend pas tout l'espace disponible
-                    // je calcule moi même cette espace.
-                    this.scrollable.scrollTarget.style.maxHeight = this.scrollable.scrollTarget.style.height = (dialogHeight - headerHeight - footerHeight - parseFloat(computedStyle.getPropertyValue("padding-top")) - parseFloat(computedStyle.getPropertyValue("padding-bottom"))) + "px";
-                });
-            }
         }
-
-
     }
 
     onVisibleChanged(newValue, oldValue) {
@@ -87,6 +117,10 @@ export default class Modal extends LitElement {
     }
 
     closeHandler(e) {
+        // j'arrête la propagation dans s'il y a plusieurs dialog ouverte.
+        // et comme le close est stoppé. Je supprime moi même le backDrop.
+        e.stopPropagation();
+        this.backdropElement.remove();
         this.dispatchEvent(new CustomEvent("close", {
             bubbles: true,
             composed: true,
@@ -99,8 +133,8 @@ export default class Modal extends LitElement {
      */
     patchOverlay(e) {
         if (e.target.withBackdrop) {
+            this.backdropElement = e.target.backdropElement;
             e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
         }
     }
-
 }

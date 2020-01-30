@@ -28,12 +28,8 @@ export default class Button extends LitElement {
                 align-items: center;
                 justify-content: center;
 
-                
-
                 cursor: pointer;
-
                 user-select: none;
-                
                 overflow: hidden;
 
                 position: relative;
@@ -71,39 +67,52 @@ export default class Button extends LitElement {
         `;
     }
 
-    render() {
-        const { onmousedown } = this;
-
+    get styleMap() {
         // je calcule le style de host pour l'appliquer au bouton.
-        // le css host sera donc appliqué au boutton
+        // le css host sera donc appliqu? au boutton
         const {
             height,
             minHeight,
+            maxHeight,
             width,
+            minWidth,
+            maxWidth,
             color,
             backgroundColor,
             fontFamily,
             fontSize,
             fontWeight,
+            borderRadius,
         } = getComputedStyle(this);
-        
-        const styles = {
-            height,
-            minHeight,
-            width,
+
+        console.log("width", width)
+
+        const computedStyle = {
+            ...parseInt(height) ? { height } : {},
+            ...parseInt(minHeight) ? { minHeight } : {},
+            ...parseInt(maxHeight) ? { maxHeight } : {},
+            ...parseInt(width) ? { width } : {},
+            ...parseInt(minWidth) ? { minWidth } : {},
+            ...parseInt(maxWidth) ? { maxWidth } : {},
             color,
             backgroundColor,
             fontFamily,
             fontSize,
             fontWeight,
+            ...parseInt(borderRadius) ? { borderRadius } : {},
         };
 
+        return computedStyle
+    }
+
+    render() {
+        const { onmousedown } = this;
         return html`
             <button
                 @mousedown="${onmousedown}"
-                style="${styleMap(styles)}"
+                style="${styleMap(this.styleMap)}"
             >
-                ${ this.renderContent()}
+                ${this.renderContent()}
             </button>
         `;
     }

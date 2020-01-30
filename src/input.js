@@ -6,13 +6,11 @@ export default class Input extends LitElement {
 
     static get styles() {
         return css`
-            .container {
+            :host {
                 display: flex;
-                flex-direction: row;
-                align-items: center;
-                width: 100%;
+            }
+            .container {
                 border-radius: 4px;
-
                 background-color: white;
                 color: #111
             }
@@ -33,6 +31,7 @@ export default class Input extends LitElement {
                 outline: none;
             }
             input::placeholder {
+                font-weight: 400;
             }
         `;
     }
