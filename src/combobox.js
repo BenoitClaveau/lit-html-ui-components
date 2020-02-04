@@ -17,8 +17,10 @@ export default class Combobox extends LitElement {
         return [
             css`
                 .container {
-                    position: relative;
                     display: inline-block;
+                }
+                dropdown-wrapper {
+                    position: relative;
                 }
             `
         ];
@@ -156,9 +158,9 @@ export default class Combobox extends LitElement {
                 </div>
                 <div id="dropdown-wrapper">
                     ${ dropdown && this.items && this.items.length ?
-                this.renderDropdown() :
-                null
-            }
+                        this.renderDropdown() :
+                        null
+                    }
                 </div>
             </div>
         `;

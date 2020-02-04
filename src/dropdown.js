@@ -13,16 +13,18 @@ export default class Dropdown extends LitElement {
                 border-radius: 4px;
                 max-height: 400px;
                 overflow: auto;
+                min-width: 204px;
+
+                background-color: #f0f0f0;
+                color: #111;
+                font-family: Roboto;
+                font-size: 16px;
+                font-weight: 500;
             }
             .container > * {
                 padding: 6px 8px;
                 cursor: pointer;
-                background-color: #fff;
                 border-bottom: 1px solid #d4d4d4;
-                font-family: Roboto;
-                color: #333;
-                font-size: 16px;
-                font-weight: 500;
                 min-height: 24px;
             }
         `;

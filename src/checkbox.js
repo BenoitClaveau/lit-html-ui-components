@@ -1,11 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import { styleMap } from 'lit-html/directives/style-map';
 
-const guid = () => {
-    const s4 = ()=> Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);     
-    return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
-}
-
 export default class Checkbox extends LitElement {
 
     static get styles() {
@@ -25,29 +20,22 @@ export default class Checkbox extends LitElement {
     static get properties() {
         return {
             checked: Boolean,
-            name: String,
-            id: String,
         }
     }
 
     render() {
         const {
             checked,
-            onChange,
-            name,
         } = this;
 
-        const id = this.id || `${guid()}`
-
         return html`
-            <input 
-                type="checkbox"
-                id="${id}" 
-                name="${name}" 
-                ?checked=${checked}
-                @change=${onChange}
-            >
-            <label for="${id}">
+            
+            <label>
+                <input 
+                    type="checkbox"
+                    ?checked=${checked}
+                    @change=${e => this.changeHandler(e)}
+                >
                 ${ this.renderLabel() }
             </label>
         `;
@@ -57,12 +45,14 @@ export default class Checkbox extends LitElement {
         return html`<slot></slot>`;
     }
 
-    onChange(e) {
-        this.dispatchEvent(new CustomEvent('checkbox-change', {
+    changeHandler(e) {
+        e.stopPropagation();
+        const path = e.path || (e.composedPath && e.composedPath());
+        this.dispatchEvent(new CustomEvent("change", {
             bubbles: true,
             composed: true,
-            detail: { 
-                checked: e.target.checked
+            detail: {
+                checked: path[0].checked
             }
         }));
     }

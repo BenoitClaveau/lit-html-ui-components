@@ -50,13 +50,13 @@ export default class Modal extends LitElement {
 
     render() {
         if (!this.renderBody) throw new Error("renderBody is not defined.");
-
+        const paperDialogStyleMap = {
+            width: this.width,
+            height: this.height,
+        };
         return html`
             <paper-dialog 
-                style="${styleMap({
-            width: this.width,
-            height: this.height
-        })}"
+                style="${styleMap(paperDialogStyleMap)}"
                 modal
                 @iron-overlay-opened="${this.patchOverlay}"
                 @iron-overlay-closed="${this.closeHandler}"
@@ -65,7 +65,7 @@ export default class Modal extends LitElement {
                     ${ this.opened && this.renderHeader && this.renderHeader()}
                 </header>
                 <paper-dialog-scrollable>
-                    ${ this.opened && this.renderBody()}
+                    <div id="body">${this.opened && this.renderBody()}</div>
                 </paper-dialog-scrollable>
                 <footer>
                     ${ this.opened && this.renderFooter && this.renderFooter()}
@@ -79,31 +79,24 @@ export default class Modal extends LitElement {
         this.header = this.dialog.querySelector("header");
         this.scrollable = this.dialog.querySelector("paper-dialog-scrollable");
         this.footer = this.dialog.querySelector("footer");
+        // j'ai ajouté un div body pour différencier this.scrollable.scrollTarget de renderBody
+        // Lors du calcul de la hauteur seul scrollTarget est limité.  La hauteur de #body ne sera pas écraser par celle de scrollTarget.
+        // Important pour un re-render.
+        this.body = this.dialog.querySelector("#body");
 
-        const ro = new ResizeObserver(entries => {
-            this.updateScrollableHeight();
+        const ro = new ResizeObserver(async entries => {
+            await this.updateScrollableHeight();
         });
-
-        ro.observe(this.scrollable.scrollTarget);
+        ro.observe(this.body);
     }
 
-    updateScrollableHeight() {
-        const { y: dialogTop } = this.dialog.getBoundingClientRect();
-        const { height: headerHeight } = this.header.getBoundingClientRect();
-        const { height: footerHeight } = this.footer.getBoundingClientRect();
-        const { scrollHeight } = this.scrollable.scrollTarget;
-        const computedStyle = window.getComputedStyle(this.scrollable);
-        const availableScrollHeight = window.innerHeight - dialogTop - headerHeight - footerHeight - parseFloat(computedStyle.getPropertyValue("padding-top")) - parseFloat(computedStyle.getPropertyValue("padding-bottom"));
-        if (scrollHeight > availableScrollHeight) {
-            this.scrollable.scrollTarget.style.maxHeight = availableScrollHeight + "px";
-            this.scrollable.scrollTarget.style.height = availableScrollHeight + "px";
+    shouldUpdate(changedProps) {
+        const res = super.shouldUpdate();
+        if (changedProps.has("opened") && this.opened && this.dialog) {
+            // je cache en attendant le chargement de la dialog
+            this.dialog.style.visibility = "hidden";
         }
-        else {
-            this.scrollable.scrollTarget.style.maxHeight = scrollHeight + "px";
-            this.scrollable.scrollTarget.style.height = scrollHeight + "px";
-            
-        }
-        this.dialog.notifyResize();
+        return res;
     }
 
     updated(changedProps) {
@@ -112,13 +105,34 @@ export default class Modal extends LitElement {
         }
     }
 
+    async updateScrollableHeight() {
+        
+        const { y: dialogTop, height: dialogHeight } = this.dialog.getBoundingClientRect();
+        const { height: headerHeight } = this.header.getBoundingClientRect();
+        const { height: footerHeight } = this.footer.getBoundingClientRect();
+        
+        const computedStyle = window.getComputedStyle(this.scrollable);
+        const headerFooterHeight = headerHeight + footerHeight + parseFloat(computedStyle.getPropertyValue("padding-top")) + parseFloat(computedStyle.getPropertyValue("padding-bottom"));
+        const maxAvailableScrollHeight = window.innerHeight - dialogTop - headerFooterHeight;
+        // ja calcul la hauteur disponible
+        const availableScrollHeight = dialogHeight - headerFooterHeight;
+
+        //console.log("availableScrollHeight", availableScrollHeight);
+
+        this.scrollable.scrollTarget.style.maxHeight = availableScrollHeight + "px";
+        this.scrollable.scrollTarget.style.height = availableScrollHeight + "px";
+
+        this.dialog.notifyResize();
+        this.dialog.style.visibility = "visible";
+    }
+
     onVisibleChanged(newValue, oldValue) {
         newValue ? this.dialog.open() : this.dialog.close();
     }
 
     closeHandler(e) {
-        // j'arrÃªte la propagation dans s'il y a plusieurs dialog ouverte.
-        // et comme le close est stoppÃ©. Je supprime moi mÃªme le backDrop.
+        // j'arr?te la propagation dans s'il y a plusieurs dialog ouverte.
+        // et comme le close est stopp?. Je supprime moi m?me le backDrop.
         e.stopPropagation();
         this.backdropElement.remove();
         this.dispatchEvent(new CustomEvent("close", {

@@ -1,5 +1,4 @@
-import { LitElement, html } from 'lit-element';
-import { styleMap } from 'lit-html/directives/style-map';
+import { LitElement, html, css } from 'lit-element';
 
 export default class Field extends LitElement {
 
@@ -37,7 +36,7 @@ export default class Field extends LitElement {
         }
     }
 
-    get fieldValue() {
+    getValue() {
         if (this.value !== undefined) return this.value;
         return this.text;
     }
@@ -46,7 +45,7 @@ export default class Field extends LitElement {
         return html`
             <div class="container">
                 <div class="label">${this.label}</div>
-                <div class="value">${this.fieldValue}</div>
+                <div class="value">${this.getValue()}</div>
             </div>
         `;
     }

@@ -6,7 +6,7 @@ export default class Button extends LitElement {
     static get styles() {
         return css`
             :host {
-                display: flex;
+                display: inline-block;
 
                 color: #000;
                 background-color: #f0f0f0;
@@ -84,8 +84,6 @@ export default class Button extends LitElement {
             fontWeight,
             borderRadius,
         } = getComputedStyle(this);
-
-        console.log("width", width)
 
         const computedStyle = {
             ...parseInt(height) ? { height } : {},

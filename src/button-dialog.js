@@ -11,18 +11,12 @@ export default class ButtonDialog extends LitElement {
         }
     }
 
-    constructor() {
-        super();
-        this.dialogWidth = "95vw";
-        this.dialogHeight = "95vh";
-    }
-
     render() {
         return html`
             <div id="button">
-                ${ this.renderButton()}
+                ${ this.renderButton() }
             </div>
-            ${ this.renderDialog()}
+            ${ this.renderDialog() }
         `;
     }
 
@@ -36,6 +30,8 @@ export default class ButtonDialog extends LitElement {
     }
 
     renderDialog() {
+        if (!this.dialogWidth) throw new Error("dialogWidth not defined!");
+        if (!this.dialogHeight) throw new Error("dialogHeight not defined!");
         return html`
             <ui-dialog
                 width=${this.dialogWidth}
