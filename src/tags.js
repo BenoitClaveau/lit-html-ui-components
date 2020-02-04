@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import Autocomplete from "./Autocomplete"
+import Autocomplete from "./autocomplete"
 
 export default class Tags extends Autocomplete {
 
