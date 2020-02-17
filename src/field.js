@@ -9,8 +9,6 @@ export default class Field extends LitElement {
                     display: flex;
                     flex-direction: column;
                     min-width: 140px;
-                    padding: 8px 0;
-                    
                 }
                 .label {
                     font-weight: 100;
@@ -22,7 +20,8 @@ export default class Field extends LitElement {
                 }
                 .value {
                     font-size: 16px;
-                    padding: 6px 0;
+                    border-bottom: 2px solid #e8e6e6;
+                    min-height: 24px;
                 }
             `
         ];

@@ -69,6 +69,10 @@ export default class Input extends LitElement {
         `;
     }
 
+    focus() {
+        this.shadowRoot.querySelector("input").focus();
+    }
+
     renderClearButton() {
         return html`
             <ui-icon

@@ -13,7 +13,7 @@ export default class InputCombobox extends Input {
             super.styles,
             css`
                 .container {
-                    width: 204px;
+                    width: auto;
                     background-color: #f0f0f0;
                     color: #111;
                 }
