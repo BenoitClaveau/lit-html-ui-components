@@ -16,11 +16,9 @@ export default class Combobox extends LitElement {
     static get styles() {
         return [
             css`
-                .container {
-                    display: inline-block;
-                }
-                dropdown-wrapper {
+                #dropdown-wrapper {
                     position: relative;
+                    overflow: visible;
                 }
             `
         ];

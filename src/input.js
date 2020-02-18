@@ -10,6 +10,9 @@ export default class Input extends LitElement {
                 display: flex;
             }
             .container {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
                 border-radius: 4px;
                 background-color: white;
                 color: #111
@@ -21,6 +24,7 @@ export default class Input extends LitElement {
                 margin-right: 8px;
             }
             input {
+                flex: 1 0 auto;
                 width: 166px;   
                 height: 36px;
                 font-family: Roboto;
