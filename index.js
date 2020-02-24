@@ -4,6 +4,8 @@ export { default as Combobox } from './src/combobox';
 export { default as Autocomplete } from './src/autocomplete';
 export { default as Tags } from './src/tags';
 export { default as Input } from './src/input';
+export { default as ContentEditable } from './src/contenteditable';
+export { default as ContentEditableElement } from './src/contenteditable-element';
 export { default as InputCombobox } from './src/input-combobox';
 export { default as Checkbox } from './src/checkbox';
 export { default as Field } from './src/field';
