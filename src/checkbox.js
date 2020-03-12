@@ -29,7 +29,6 @@ export default class Checkbox extends LitElement {
         } = this;
 
         return html`
-            
             <label>
                 <input 
                     type="checkbox"

@@ -2,6 +2,18 @@ import { LitElement, html, css } from 'lit-element';
 import Combobox from "./combobox"
 import debounce from './core/debounce';
 
+/**
+ * events:
+ * - select (item: object, index: number)
+ * - submit (value: text)
+ * 
+ * methods to be defined:
+ * - getInputValue (-> text): retourne le texte à afficher dans l'input pour un item.
+ * - initInputValue: initialise this.inputValue avec lors de la création
+ * - renderInput
+ * - renderDropdown
+ * - fetch: fetch est appelé quand le texte affiché est modifié.
+ */
 export default class Autocomplete extends Combobox {
 
     static get properties() {

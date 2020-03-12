@@ -2,6 +2,16 @@ import { LitElement, html, css } from 'lit-element';
 import { styleMap } from 'lit-html/directives/style-map';
 import "../ui-icon";
 
+/**
+ * events:
+ * - change (value: text)
+ * - submit (value: text)
+ * - clear
+ * 
+ * methods to be defined:
+ * - value (string)
+ * - placeholder* (string
+ */
 export default class Input extends LitElement {
 
     static get styles() {

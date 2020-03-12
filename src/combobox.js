@@ -5,9 +5,9 @@ import { LitElement, html, css } from 'lit-element';
  * - select (item: object, index: number)
  * - submit (value: text)
  * 
- * methods to defined:
- * - getInputValue (-> text)
- * - initInputValue 
+ * methods to be defined:
+ * - getInputValue (-> text): retourne le texte à afficher dans l'input pour un item.
+ * - initInputValue: initialise this.inputValue avec lors de la création
  * - renderInput
  * - renderDropdown
  */
@@ -16,7 +16,7 @@ export default class Combobox extends LitElement {
     static get styles() {
         return [
             css`
-                #dropdown-wrapper {
+                #dropdown-container {
                     position: relative;
                     overflow: visible;
                 }
@@ -61,14 +61,14 @@ export default class Combobox extends LitElement {
     }
 
     firstUpdated() {
-        const input = this.shadowRoot.querySelector("#input-wrapper");
+        const input = this.shadowRoot.querySelector("#input-container");
         input.addEventListener('change', e => this.inputChangeHandler(e));
         input.addEventListener('submit', e => this.inputSubmitHandler(e));
         input.addEventListener('clear', e => this.inputClearHandler(e));
         input.addEventListener('open', e => this.inputOpenHandler(e));
         input.addEventListener('close', e => this.inputCloseHandler(e));
 
-        const dropdown = this.shadowRoot.querySelector("#dropdown-wrapper");
+        const dropdown = this.shadowRoot.querySelector("#dropdown-container");
         dropdown.addEventListener('select', e => this.dropdownSelectHandler(e));
     }
 
@@ -150,16 +150,14 @@ export default class Combobox extends LitElement {
         const { dropdown } = this;
 
         return html`
-            <div class="container">
-                <div id="input-wrapper">
-                    ${ this.renderInput()}
-                </div>
-                <div id="dropdown-wrapper">
-                    ${ dropdown && this.items && this.items.length ?
-                        this.renderDropdown() :
-                        null
-                    }
-                </div>
+            <div id="input-container">
+                ${ this.renderInput()}
+            </div>
+            <div id="dropdown-container">
+                ${ dropdown && this.items && this.items.length ?
+                    this.renderDropdown() :
+                    null
+                }
             </div>
         `;
     }
@@ -179,6 +177,10 @@ export default class Combobox extends LitElement {
         throw new Error("Not implemented!");
     }
 
+	/**
+     * Render du composant affichant l'input
+     * ex: ui-input
+     */
     renderInput() {
         /**
          * placeholder,
@@ -187,6 +189,10 @@ export default class Combobox extends LitElement {
         throw new Error("Not implemented!");
     }
 
+	/**
+     * Render du composant affichant le dropdown
+     * ex: ui-input
+     */
     renderDropdown() {
         /** 
          * items

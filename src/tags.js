@@ -1,18 +1,27 @@
 import { LitElement, html, css } from 'lit-element';
 import Autocomplete from "./autocomplete"
 
+/**
+ * events:
+ * - change (value: text)
+ * - submit (value: text)
+ * - clear
+ * - remove
+ * 
+ * methods to be defined:
+ */
 export default class Tags extends Autocomplete {
 
     static get styles() {
         return [
             super.styles,
             css`
-                .tag-container {
+                .tags-container {
                     display: flex;
                     flex-direction: row;
                     flex-wrap: wrap;
                 }
-                .tag-container > * {
+                .tags-container > * {
                     margin: 4px 4px 4px 0px;
                 }
             `
@@ -32,29 +41,18 @@ export default class Tags extends Autocomplete {
     }
 
     render() {
-        const { dropdown } = this;
-
+        const autocomplete = super.render();
         return html`
-            <div class="container">
-                <div id="tags-wrapper">
-                    ${ this.renderTags()}
-                </div>
-                <div id="input-wrapper">
-                    ${ this.renderInput()}
-                </div>
-                <div id="dropdown-wrapper">
-                    ${ dropdown && this.items && this.items.length ?
-                        this.renderDropdown() :
-                        null
-                    }
-                </div>
+            <div id="tags-container">
+                ${ this.renderTags() }
             </div>
+            ${ autocomplete }
         `;
     }
 
     firstUpdated() {
         super.firstUpdated();
-        const tags = this.shadowRoot.querySelector("#tags-wrapper");
+        const tags = this.shadowRoot.querySelector("#tags-container");
         tags.addEventListener('remove', e => this.tagRemoveHandler(e));
     }
 
@@ -70,13 +68,11 @@ export default class Tags extends Autocomplete {
 
     renderTags() {
         return html`
-            <div class="tag-container">
-                ${this.tags.map(e => this.renderTag(e))}
-            </div>
+        	${this.tags.map((e, i, arr) => this.renderTag(e, i, arr))}
         `
     }
 
-    renderTag(e) {
+    renderTag(e, i, arr) {
         throw new Error("Not implemented!");
     }
 }
