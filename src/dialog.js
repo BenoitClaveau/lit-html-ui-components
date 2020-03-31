@@ -1,9 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import "@polymer/paper-dialog/paper-dialog.js";
-import "@polymer/paper-dialog-scrollable/paper-dialog-scrollable";
-import { styleMap } from 'lit-html/directives/style-map';
-import Modal from "./modal";
-import "../ui-icon";
+import "@polymer/paper-dialog-scrollable/paper-dialog-scrollable.js";
+import Modal from "./modal.js";
+import "../ui-icon.js";
 
 export default class Dialog extends Modal {
 

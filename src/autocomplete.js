@@ -1,6 +1,5 @@
-import { LitElement, html, css } from 'lit-element';
-import Combobox from "./combobox"
-import debounce from './core/debounce';
+import Combobox from "./combobox.js"
+import debounce from './core/debounce.js';
 
 /**
  * events:

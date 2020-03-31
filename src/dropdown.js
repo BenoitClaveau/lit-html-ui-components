@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit-element';
-import { styleMap } from 'lit-html/directives/style-map';
 
 export default class Dropdown extends LitElement {
 

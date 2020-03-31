@@ -1,16 +1,17 @@
 import { LitElement, html, css } from "lit-element";
 import "@polymer/paper-dialog/paper-dialog.js";
-import "@polymer/paper-dialog-scrollable/paper-dialog-scrollable";
-import { styleMap } from "lit-html/directives/style-map";
+import "@polymer/paper-dialog-scrollable/paper-dialog-scrollable.js";
+import { styleMap } from "lit-html/directives/style-map.js";
 
 export default class Modal extends LitElement {
 
     static get styles() {
         return css`
-            paper-dialog {
-                margin: 0;
-                padding: 0;
+            :host {
                 background-color: white;
+            }
+            paper-dialog {
+                
             }
             paper-dialog > * {
                 margin: 0;
@@ -21,9 +22,7 @@ export default class Modal extends LitElement {
 
     static get properties() {
         return {
-            opened: Boolean,
-            width: String,
-            height: String
+            opened: Boolean
         }
     }
 
@@ -50,10 +49,19 @@ export default class Modal extends LitElement {
 
     render() {
         if (!this.renderBody) throw new Error("renderBody is not defined.");
+
+        const {
+            height, minHeight, maxHeight,
+            width, minWidth, maxWidth,
+            backgroundColor,
+        } = getComputedStyle(this);
+
         const paperDialogStyleMap = {
-            width: this.width,
-            height: this.height,
+            height, minHeight, maxHeight,
+            width, minWidth, maxWidth,
+            backgroundColor, 
         };
+        
         return html`
             <paper-dialog 
                 style="${styleMap(paperDialogStyleMap)}"
@@ -79,8 +87,6 @@ export default class Modal extends LitElement {
         this.header = this.dialog.querySelector("header");
         this.scrollable = this.dialog.querySelector("paper-dialog-scrollable");
         this.footer = this.dialog.querySelector("footer");
-        // j'ai ajouté un div body pour différencier this.scrollable.scrollTarget de renderBody
-        // Lors du calcul de la hauteur seul scrollTarget est limité.  La hauteur de #body ne sera pas écraser par celle de scrollTarget.
         // Important pour un re-render.
         this.body = this.dialog.querySelector("#body");
 
@@ -117,8 +123,6 @@ export default class Modal extends LitElement {
         // ja calcul la hauteur disponible
         const availableScrollHeight = dialogHeight - headerFooterHeight;
 
-        //console.log("availableScrollHeight", availableScrollHeight);
-
         this.scrollable.scrollTarget.style.maxHeight = availableScrollHeight + "px";
         this.scrollable.scrollTarget.style.height = availableScrollHeight + "px";
 
@@ -132,7 +136,7 @@ export default class Modal extends LitElement {
 
     closeHandler(e) {
         // j'arrete la propagation dans s'il y a plusieurs dialog ouverte.
-        // et comme l'évenement close est stoppé. Je supprime moi même le backDrop.
+        // et comme l'evenement close est stoppe. Je supprime moi meme le backDrop.
         e.stopPropagation();
         this.backdropElement.remove();
         this.dispatchEvent(new CustomEvent("close", {

@@ -1,41 +1,42 @@
 import { LitElement, html, css } from 'lit-element';
-import "../ui-dialog";
+import "../ui-dialog.js";
+import "../ui-button.js";
 
 export default class ButtonDialog extends LitElement {
 
+    static get styles() {
+        return [
+            css`
+                #dialog {
+                    width: 95vw;
+                    height: 95vh;
+                }
+            `
+        ];
+    }
+
     static get properties() {
         return {
-            opened: Boolean,
-            dialogWidth: String,
-            dialogHeight: String,
+            ...super.properties,
+            opened: Boolean
         }
+    }
+
+    renderButton() {
+        throw new Error("Not implemented!")
     }
 
     render() {
         return html`
-            <div id="button">
-                ${ this.renderButton() }
-            </div>
+            ${ this.renderButton() }
             ${ this.renderDialog() }
         `;
     }
 
-    firstUpdated() {
-        const button = this.shadowRoot.querySelector("#button");
-        button.addEventListener('click', e => this.onButtonClick(e));   
-    }
-
-    renderButton() {
-        throw new Error("Not implemented!");
-    }
-
     renderDialog() {
-        if (!this.dialogWidth) throw new Error("dialogWidth not defined!");
-        if (!this.dialogHeight) throw new Error("dialogHeight not defined!");
         return html`
             <ui-dialog
-                width=${this.dialogWidth}
-                height=${this.dialogHeight}
+                id="dialog"
                 .opened=${this.opened}
                 .renderBody=${() => this.renderDialogBody()}
                 .renderFooter=${() => this.renderDialogFooter()}
@@ -45,13 +46,7 @@ export default class ButtonDialog extends LitElement {
     }
 
     onDialogClose(e) {
-        e.stopPropagation();
         this.opened = false;
-    }
-
-    onButtonClick(e) {
-        e.stopPropagation();
-        this.opened = true;
     }
 
     renderDialogBody() {

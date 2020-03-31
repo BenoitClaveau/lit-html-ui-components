@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
-import "./iconset";
-import Input from './input';
-import "../ui-icon";
+import "./iconset.js";
+import "../ui-icon.js";
+import Input from './input.js';
 
 /**
  * Input + ui-icon dropdown

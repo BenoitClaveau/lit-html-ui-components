@@ -1,7 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { styleMap } from 'lit-html/directives/style-map';
-import "../ui-icon";
-
+import "../ui-icon.js";
 /**
  * events:
  * - change (value: text)
@@ -77,7 +75,7 @@ export default class Input extends LitElement {
             <input
                 type="text"
                 @keyup="${onKeyUp}"
-                .value="${value ? value : null}" // pour éviter d'afficher 'undefined'
+                .value="${value ? value : null}"
                 placeholder="${placeholder ? placeholder : ''}"
             />
         `;

@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { styleMap } from 'lit-html/directives/style-map.js';
 
 export default class Field extends LitElement {
 
@@ -11,17 +12,13 @@ export default class Field extends LitElement {
                     min-width: 140px;
                 }
                 .label {
-                    font-weight: 100;
-                    color: var(--accent-color);
-                }
-                .label {
-                    font-weight: 100;
+                    font-size: .8em; 
+                    font-weight: 400;
                     color: var(--accent-color);
                 }
                 .value {
-                    font-size: 16px;
+                    min-height: 1.4em;
                     border-bottom: 2px solid #e8e6e6;
-                    min-height: 24px;
                 }
             `
         ];
@@ -41,8 +38,22 @@ export default class Field extends LitElement {
     }
 
     render() {
+
+        const {
+            width,
+            minWidth,
+            maxWidth,
+        } = getComputedStyle(this);
+        
+        // pour surcharger le style de container
+        const computedStyle = {
+            ...parseInt(width) ? { width } : {},
+            ...parseInt(minWidth) ? { minWidth } : {},
+            ...parseInt(maxWidth) ? { maxWidth } : {},
+        };
+
         return html`
-            <div class="container">
+            <div class="container" style="${styleMap(computedStyle)}">
                 <div class="label">${this.label}</div>
                 <div class="value">${this.getValue()}</div>
             </div>

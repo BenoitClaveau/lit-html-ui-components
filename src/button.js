@@ -1,28 +1,18 @@
 import { LitElement, html, css } from 'lit-element';
-import { styleMap } from 'lit-html/directives/style-map';
 
+/**
+ * https://html.spec.whatwg.org/multipage/custom-elements.html
+ */
 export default class Button extends LitElement {
 
     static get styles() {
         return css`
             :host {
-                display: inline-block;
-
-                color: #000;
-                background-color: #f0f0f0;
-
-                font-family: Roboto;
-                font-size: 16px;
-                font-weight: 500;
-                text-decoration: none;
-
-                min-height: 36px;
-            }
-            button {
-                flex: 1 0 auto;
+                position: relative;
 
                 border: none;
                 outline: none;
+
                 display: flex;
                 flex-direction: row;
                 align-items: center;
@@ -32,9 +22,19 @@ export default class Button extends LitElement {
                 user-select: none;
                 overflow: hidden;
 
-                position: relative;
+                color: #000;
+                background-color: #f0f0f0;
 
-                background-color: transparent;
+                font-family: Roboto;
+                font-size: 16px;
+                font-weight: 500;
+                text-decoration: none;
+
+                box-sizing: border-box;
+                min-height: 36px;
+                padding-left: 16px;
+                padding-right: 16px;
+
             }
             [disabled] {
                 opacity: 0.6;
@@ -67,95 +67,111 @@ export default class Button extends LitElement {
         `;
     }
 
-    get styleMap() {
-        // je calcule le style de host pour l'appliquer au bouton.
-        // le css host sera donc appliqu? au boutton
-        const {
-            height,
-            minHeight,
-            maxHeight,
-            width,
-            minWidth,
-            maxWidth,
-            color,
-            backgroundColor,
-            fontFamily,
-            fontSize,
-            fontWeight,
-            borderRadius,
-        } = getComputedStyle(this);
 
-        const computedStyle = {
-            ...parseInt(height) ? { height } : {},
-            ...parseInt(minHeight) ? { minHeight } : {},
-            ...parseInt(maxHeight) ? { maxHeight } : {},
-            ...parseInt(width) ? { width } : {},
-            ...parseInt(minWidth) ? { minWidth } : {},
-            ...parseInt(maxWidth) ? { maxWidth } : {},
-            color,
-            backgroundColor,
-            fontFamily,
-            fontSize,
-            fontWeight,
-            ...parseInt(borderRadius) ? { borderRadius } : {},
-        };
-
-        return computedStyle
+    static get properties() { 
+        return {
+            disabled: {
+                attribute: "disabled",
+                type: Boolean
+            }
+        }
     }
 
-    render() {
-        const { onmousedown } = this;
-        return html`
-            <button
-                @mousedown="${onmousedown}"
-                style="${styleMap(this.styleMap)}"
-            >
-                ${this.renderContent()}
-            </button>
-        `;
+    constructor() {
+        super();
+
+        this.addEventListener("keydown", e => {
+            if (e.keyCode === 32 || e.keyCode === 13) {
+                this.dispatchEvent(new MouseEvent("click", {
+                    bubbles: true,
+                    cancelable: true
+                }));
+            }
+        });
+
+        this.addEventListener("click", e => {
+            if (this.disabled) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+        this.addEventListener("mousedown", e => {
+            this.createRipple(e);
+            const onmouseup = (e) => {
+                document.removeEventListener("mouseup", onmouseup);
+                this.cancelRipple();
+            };
+            document.addEventListener("mouseup", onmouseup);
+        });
+
+        this._observer = new MutationObserver(() => {
+            this.setAttribute("aria-label", this.textContent);
+        });
     }
 
-    firstUpdated() {
-        this.button = this.shadowRoot.querySelector("button");
+    connectedCallback() {
+        this.setAttribute("role", "button");
+        this.setAttribute("tabindex", "0");
+
+        this._observer.observe(this, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+        return super.connectedCallback();
     }
 
-    renderContent() {
-        return html`<slot></slot>`;
+    disconnectedCallback() {
+        this._observer.disconnect();
     }
 
-    onmousedown(e) {
-        this.createRipple(e);
-        const onmouseup = (e) => {
-            document.removeEventListener("mouseup", onmouseup);
-            this.cancelRipple();
-        };
-        document.addEventListener("mouseup", onmouseup);
+
+    attributeChangedCallback() {
+        // only is called for the disabled attribute due to observedAttributes
+        if (this.disabled) {
+            this.removeAttribute("tabindex");
+            this.setAttribute("aria-disabled", "true");
+        } else {
+            this.setAttribute("tabindex", "0");
+            this.setAttribute("aria-disabled", "false");
+        }
     }
 
     cancelRipple() {
         if (!this.circle) return;
-
         const circle = this.circle;
         this.circle = null;
-
         circle.addEventListener("animationend", () => circle.remove());
         circle.classList.add("rippleout");
-
     }
 
     createRipple(e) {
-        if (this.circle) this.button.removeChild(this.circle);
-
+        if (this.circle) this.container.removeChild(this.circle);
         const circle = document.createElement("div");
-
-        const d = Math.max(this.button.clientWidth, this.button.clientHeight);
+        const d = Math.max(this.container.clientWidth, this.container.clientHeight);
         circle.style.width = circle.style.height = d + "px";
-        const rect = this.button.getBoundingClientRect();
+        const rect = this.container.getBoundingClientRect();
         circle.style.left = e.clientX - rect.left - d / 2 + "px";
         circle.style.top = e.clientY - rect.top - d / 2 + "px";
         circle.classList.add("ripple");
-
         this.circle = circle;
-        this.button.appendChild(circle);
+        this.container.appendChild(circle);
+    }
+
+    firstUpdated() {
+        this.container = this.shadowRoot.querySelector("#container");
+    }
+
+    render() {
+        return html`
+            <div id="container">
+            ${ this.renderContent() }
+            </div>
+        `;
+    }
+
+    renderContent() {
+        return html`<slot></slot>`;
     }
 }

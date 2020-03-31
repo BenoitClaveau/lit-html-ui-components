@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import Autocomplete from "./autocomplete"
+import Autocomplete from "./autocomplete.js"
 
 /**
  * events:
