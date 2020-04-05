@@ -27,7 +27,7 @@ export default class InputCombobox extends Input {
     static get properties() {
         return {
             ...super.properties,
-            dropdown: Boolean,
+            dropdown: Boolean
         }
     }
 

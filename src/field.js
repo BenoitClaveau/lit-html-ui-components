@@ -37,6 +37,12 @@ export default class Field extends LitElement {
         return this.text;
     }
 
+    renderValue() {
+        return html`
+            <div class="value">${this.getValue()}</div>
+        `;
+    }
+
     render() {
 
         const {
@@ -55,7 +61,7 @@ export default class Field extends LitElement {
         return html`
             <div class="container" style="${styleMap(computedStyle)}">
                 <div class="label">${this.label}</div>
-                <div class="value">${this.getValue()}</div>
+                ${this.renderValue()}
             </div>
         `;
     }
