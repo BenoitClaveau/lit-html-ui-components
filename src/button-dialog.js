@@ -8,8 +8,8 @@ export default class ButtonDialog extends LitElement {
         return [
             css`
                 #dialog {
-                    width: 95vw;
-                    height: 95vh;
+                    --ui-dialog-width: 95vw;
+                    --ui-dialog-height: 95vh;
                 }
             `
         ];
@@ -43,6 +43,10 @@ export default class ButtonDialog extends LitElement {
                 @close=${e => this.onDialogClose(e)}
             ></ui-dialog>
         `
+    }
+
+    firstUpdated() {
+        this.dialog = this.shadowRoot.querySelector("#dialog");
     }
 
     onDialogClose(e) {

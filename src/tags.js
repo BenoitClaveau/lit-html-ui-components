@@ -67,6 +67,7 @@ export default class Tags extends Autocomplete {
     }
 
     renderTags() {
+        if (!this.tags) return null;
         return html`
         	${this.tags.map((e, i, arr) => this.renderTag(e, i, arr))}
         `

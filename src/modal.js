@@ -10,9 +10,6 @@ export default class Modal extends LitElement {
             :host {
                 background-color: white;
             }
-            paper-dialog {
-                
-            }
             paper-dialog > * {
                 margin: 0;
                 padding: 0;
@@ -29,42 +26,19 @@ export default class Modal extends LitElement {
     constructor() {
         super();
         this.opened = false;
-        this.resizeHandler = (e) => this._resizeHandler(e);
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        window.addEventListener('resize', this.resizeHandler);
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        window.removeEventListener('resize', this.resizeHandler);
-    }
-
-    _resizeHandler(e) {
+    resize() {
         if (!this.dialog) return;
-        this.updateScrollableHeight();
+        this.dialog.notifyResize();
     }
 
     render() {
         if (!this.renderBody) throw new Error("renderBody is not defined.");
-
-        const {
-            height, minHeight, maxHeight,
-            width, minWidth, maxWidth,
-            backgroundColor,
-        } = getComputedStyle(this);
-
-        const paperDialogStyleMap = {
-            height, minHeight, maxHeight,
-            width, minWidth, maxWidth,
-            backgroundColor, 
-        };
         
         return html`
             <paper-dialog 
-                style="${styleMap(paperDialogStyleMap)}"
+                id="dialog"
                 modal
                 @iron-overlay-opened="${this.patchOverlay}"
                 @iron-overlay-closed="${this.closeHandler}"
@@ -83,51 +57,13 @@ export default class Modal extends LitElement {
     }
 
     firstUpdated() {
-        this.dialog = this.shadowRoot.querySelector("paper-dialog");
-        this.header = this.dialog.querySelector("header");
-        this.scrollable = this.dialog.querySelector("paper-dialog-scrollable");
-        this.footer = this.dialog.querySelector("footer");
-        // Important pour un re-render.
-        this.body = this.dialog.querySelector("#body");
-
-        const ro = new ResizeObserver(async entries => {
-            await this.updateScrollableHeight();
-        });
-        ro.observe(this.body);
-    }
-
-    shouldUpdate(changedProps) {
-        const res = super.shouldUpdate();
-        if (changedProps.has("opened") && this.opened && this.dialog) {
-            // je cache en attendant le chargement de la dialog
-            this.dialog.style.visibility = "hidden";
-        }
-        return res;
+        this.dialog = this.shadowRoot.querySelector("#dialog");
     }
 
     updated(changedProps) {
         if (changedProps.has("opened")) {
             this.onVisibleChanged(this.opened, changedProps.get("opened"));
         }
-    }
-
-    async updateScrollableHeight() {
-        
-        const { y: dialogTop, height: dialogHeight } = this.dialog.getBoundingClientRect();
-        const { height: headerHeight } = this.header.getBoundingClientRect();
-        const { height: footerHeight } = this.footer.getBoundingClientRect();
-        
-        const computedStyle = window.getComputedStyle(this.scrollable);
-        const headerFooterHeight = headerHeight + footerHeight + parseFloat(computedStyle.getPropertyValue("padding-top")) + parseFloat(computedStyle.getPropertyValue("padding-bottom"));
-        const maxAvailableScrollHeight = window.innerHeight - dialogTop - headerFooterHeight;
-        // ja calcul la hauteur disponible
-        const availableScrollHeight = dialogHeight - headerFooterHeight;
-
-        this.scrollable.scrollTarget.style.maxHeight = availableScrollHeight + "px";
-        this.scrollable.scrollTarget.style.height = availableScrollHeight + "px";
-
-        this.dialog.notifyResize();
-        this.dialog.style.visibility = "visible";
     }
 
     onVisibleChanged(newValue, oldValue) {
