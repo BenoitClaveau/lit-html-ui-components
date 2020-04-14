@@ -10,31 +10,37 @@ export default class Button extends LitElement {
             :host {
                 position: relative;
 
-                border: none;
-                outline: none;
-
                 display: flex;
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
 
-                cursor: pointer;
-                user-select: none;
+                border: none;
+                outline: none;
+                box-sizing: border-box;
                 overflow: hidden;
-
-                color: #000;
-                background-color: #f0f0f0;
 
                 font-family: Roboto;
                 font-size: 16px;
                 font-weight: 500;
                 text-decoration: none;
+            }
+            #button {
+                cursor: pointer;
 
-                box-sizing: border-box;
-                min-height: 36px;
-                padding-left: 16px;
-                padding-right: 16px;
+                border: none;
+                
+                min-height: inherit;
+                height: inherit;
+                max-height: inherit;
+                min-width: inherit;
+                width: inherit;
+                max-width: inherit;
+                border-radius: inherit;
+                outline: inherit;
 
+                background: inherit;
+                color: inherit;
             }
             [disabled] {
                 opacity: 0.6;
@@ -77,66 +83,43 @@ export default class Button extends LitElement {
         }
     }
 
-    constructor() {
-        super();
+    // constructor() {
+    //     super();
 
-        this.addEventListener("keydown", e => {
-            if (e.keyCode === 32 || e.keyCode === 13) {
-                this.dispatchEvent(new MouseEvent("click", {
-                    bubbles: true,
-                    cancelable: true
-                }));
-            }
-        });
+        
 
-        this.addEventListener("click", e => {
-            if (this.disabled) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        });
+    //     // this._observer = new MutationObserver(() => {
+    //     //     this.setAttribute("aria-label", this.textContent);
+    //     // });
+    // }
 
-        this.addEventListener("mousedown", e => {
-            this.createRipple(e);
-            const onmouseup = (e) => {
-                document.removeEventListener("mouseup", onmouseup);
-                this.cancelRipple();
-            };
-            document.addEventListener("mouseup", onmouseup);
-        });
+    // connectedCallback() {
+    //     this.setAttribute("role", "button");
+    //     this.setAttribute("tabindex", "0");
 
-        this._observer = new MutationObserver(() => {
-            this.setAttribute("aria-label", this.textContent);
-        });
-    }
+    //     this._observer.observe(this, {
+    //         childList: true,
+    //         characterData: true,
+    //         subtree: true
+    //     });
+    //     return super.connectedCallback();
+    // }
 
-    connectedCallback() {
-        this.setAttribute("role", "button");
-        this.setAttribute("tabindex", "0");
-
-        this._observer.observe(this, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
-        return super.connectedCallback();
-    }
-
-    disconnectedCallback() {
-        this._observer.disconnect();
-    }
+    // disconnectedCallback() {
+    //     this._observer.disconnect();
+    // }
 
 
-    attributeChangedCallback() {
-        // only is called for the disabled attribute due to observedAttributes
-        if (this.disabled) {
-            this.removeAttribute("tabindex");
-            this.setAttribute("aria-disabled", "true");
-        } else {
-            this.setAttribute("tabindex", "0");
-            this.setAttribute("aria-disabled", "false");
-        }
-    }
+    // attributeChangedCallback() {
+    //     // only is called for the disabled attribute due to observedAttributes
+    //     if (this.disabled) {
+    //         this.removeAttribute("tabindex");
+    //         this.setAttribute("aria-disabled", "true");
+    //     } else {
+    //         this.setAttribute("tabindex", "0");
+    //         this.setAttribute("aria-disabled", "false");
+    //     }
+    // }
 
     cancelRipple() {
         if (!this.circle) return;
@@ -147,27 +130,52 @@ export default class Button extends LitElement {
     }
 
     createRipple(e) {
-        if (this.circle) this.container.removeChild(this.circle);
+        if (this.circle) this.button.removeChild(this.circle);
         const circle = document.createElement("div");
-        const d = Math.max(this.container.clientWidth, this.container.clientHeight);
+        const d = Math.max(this.button.clientWidth, this.button.clientHeight);
         circle.style.width = circle.style.height = d + "px";
-        const rect = this.container.getBoundingClientRect();
+        const rect = this.button.getBoundingClientRect();
         circle.style.left = e.clientX - rect.left - d / 2 + "px";
         circle.style.top = e.clientY - rect.top - d / 2 + "px";
         circle.classList.add("ripple");
         this.circle = circle;
-        this.container.appendChild(circle);
+        this.button.appendChild(circle);
     }
 
     firstUpdated() {
-        this.container = this.shadowRoot.querySelector("#container");
+        this.button = this.shadowRoot.querySelector("#button");
+
+        this.button.addEventListener("keydown", e => {
+            if (e.keyCode === 32 || e.keyCode === 13) {
+                this.dispatchEvent(new MouseEvent("click", {
+                    bubbles: true,
+                    cancelable: true
+                }));
+            }
+        });
+
+        this.button.addEventListener("click", e => {
+            if (this.disabled) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+        this.button.addEventListener("mousedown", e => {
+            this.createRipple(e);
+            const onmouseup = (e) => {
+                document.removeEventListener("mouseup", onmouseup);
+                this.cancelRipple();
+            };
+            document.addEventListener("mouseup", onmouseup);
+        });
     }
 
     render() {
         return html`
-            <div id="container">
+            <button id="button">
             ${ this.renderContent() }
-            </div>
+            </button>
         `;
     }
 

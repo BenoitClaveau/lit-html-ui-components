@@ -13,8 +13,8 @@ customElements.define('ui-input', class extends Input {
         return [
             super.styles,
             css`
-                input:focus {
-                    outline: 1px solid var(--accent-color);
+                input {
+                    outline: var(--ui-input-outline, 1px solid var(--accent-color));
                 }
             `
         ]

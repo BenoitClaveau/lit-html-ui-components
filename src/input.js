@@ -91,7 +91,7 @@ export default class Input extends LitElement {
                 icon="close"
                 height="18px"
                 width="18px"
-                @tap="${e => this.clear()}"
+                @click="${e => this.clear()}"
             ></ui-icon>
         `;
     }

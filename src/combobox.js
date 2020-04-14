@@ -16,11 +16,6 @@ export default class Combobox extends LitElement {
     static get styles() {
         return [
             css`
-                :host {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 1 0 auto;
-                }
                 #dropdown-container {
                     position: relative;
                     overflow: visible;
