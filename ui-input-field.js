@@ -10,6 +10,7 @@ customElements.define("ui-input-field", class extends Field {
             css`
                ui-input {
                     --ui-input-outline: none;
+                    background-color: #f0f0f0;
                }
             `
         ];

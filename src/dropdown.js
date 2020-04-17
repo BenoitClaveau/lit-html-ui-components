@@ -4,7 +4,7 @@ export default class Dropdown extends LitElement {
 
     static get styles() {
         return css`
-            .container {
+            :host {
                 position: fixed;
                 z-index: 99;
                 overflow: hidden;
@@ -20,7 +20,7 @@ export default class Dropdown extends LitElement {
                 font-size: 16px;
                 font-weight: 500;
             }
-            .container > * {
+            :host > * {
                 padding: 6px 8px;
                 cursor: pointer;
                 border-bottom: 1px solid #d4d4d4;
@@ -37,14 +37,6 @@ export default class Dropdown extends LitElement {
     }
 
     render() {
-        return html`
-            <div class="container">
-                ${this.renderItems()}
-            </div>
-        `;
-    }
-
-    renderItems() {
         const {
             items,
             activeIndex

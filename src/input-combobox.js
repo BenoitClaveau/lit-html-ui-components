@@ -12,8 +12,7 @@ export default class InputCombobox extends Input {
         return [
             super.styles,
             css`
-                .container {
-                    width: auto;
+                :host {
                     background-color: #f0f0f0;
                     color: #111;
                 }
@@ -57,11 +56,9 @@ export default class InputCombobox extends Input {
 
     render() {
         return html`
-            <div class="container">
-                ${ this.renderInput() }
-                ${ this.renderClearButton() }
-                ${ this.renderDropdownButton() }
-            </div>
+            ${ this.renderInput() }
+            ${ this.renderClearButton() }
+            ${ this.renderDropdownButton() }
         `;
     }
 

@@ -9,6 +9,20 @@ export default class Modal extends LitElement {
             :host {
                 background-color: white;
             }
+            header {
+                display: flex;
+                justify-content: flex-end;
+            }
+            paper-dialog-scrollable {
+            }
+            footer {
+                display: flex;
+                justify-content: flex-end;
+            }
+            footer > * {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
         `;
     }
 

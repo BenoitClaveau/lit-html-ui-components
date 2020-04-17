@@ -7,7 +7,7 @@ export default class ButtonDialog extends LitElement {
     static get styles() {
         return [
             css`
-                #dialog {
+                ui-dialog {
                     --ui-dialog-width: 95vw;
                     --ui-dialog-height: 95vh;
                 }
@@ -17,7 +17,6 @@ export default class ButtonDialog extends LitElement {
 
     static get properties() {
         return {
-            ...super.properties,
             opened: Boolean
         }
     }
@@ -36,7 +35,6 @@ export default class ButtonDialog extends LitElement {
     renderDialog() {
         return html`
             <ui-dialog
-                id="dialog"
                 .opened=${this.opened}
                 .renderBody=${() => this.renderDialogBody()}
                 .renderFooter=${() => this.renderDialogFooter()}
@@ -46,7 +44,7 @@ export default class ButtonDialog extends LitElement {
     }
 
     firstUpdated() {
-        this.dialog = this.shadowRoot.querySelector("#dialog");
+        this.dialog = this.shadowRoot.querySelector("ui-dialog");
     }
 
     onDialogClose(e) {

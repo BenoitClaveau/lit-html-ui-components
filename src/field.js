@@ -11,7 +11,7 @@ export default class Field extends LitElement {
                     min-width: 140px;
                 }
                 .label {
-                    font-size: 0.8em; 
+                    font-size: 0.9em; 
                     font-weight: 400;
                     color: var(--accent-color);
                 }

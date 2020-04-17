@@ -16,14 +16,15 @@ export default class Tags extends Autocomplete {
         return [
             super.styles,
             css`
-                .tags-container {
+                #tags-container {
                     display: flex;
                     flex-direction: row;
                     flex-wrap: wrap;
                 }
-                .tags-container > * {
+                #tags-container > * {
                     margin: 4px 4px 4px 0px;
                 }
+                
             `
         ];
     }

@@ -6,14 +6,6 @@ import "../ui-icon.js";
 
 export default class Dialog extends Modal {
 
-    static get styles() {
-        return [
-            super.styles,
-            css`
-            `
-        ];
-    }
-
     renderHeader() {
         return html`
             ${this.renderTitle()}

@@ -13,13 +13,13 @@ customElements.define('ui-dialog', class extends Dialog {
                 #dialog {
                     width: var(--ui-dialog-width);
                     height: var(--ui-dialog-height);
-                    min-width: var(--ui-dialog-min-width);
-                    max-width: var(--ui-dialog-max-width);
-                    min-height: var(--ui-dialog-min-height);
-                    max-height: var(--ui-dialog-max-height);
+                    min-width: var(--ui-dialog-min-width, 200px);
+                    max-width: var(--ui-dialog-max-width, 100vw);
+                    min-height: var(--ui-dialog-min-height, 140px);
+                    max-height: var(--ui-dialog-max-height, 100vh);
                 }
-                paper-dialog-scrollable {
-                    height: calc(100% - 92px);
+				paper-dialog-scrollable {
+                    height: calc(100% - 120px);
                 }
             `
         ];
