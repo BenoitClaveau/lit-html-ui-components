@@ -41,12 +41,9 @@ export default class Tags extends Autocomplete {
     }
 
     render() {
-        const autocomplete = super.render();
         return html`
-            <div id="tags-container">
-                ${ this.renderTags() }
-            </div>
-            ${ autocomplete }
+            ${ this.renderTags() }
+            ${ super.render() }
         `;
     }
 
@@ -69,7 +66,9 @@ export default class Tags extends Autocomplete {
     renderTags() {
         if (!this.tags) return null;
         return html`
-        	${this.tags.map((e, i, arr) => this.renderTag(e, i, arr))}
+            <div id="tags-container">
+                ${this.tags.map((e, i, arr) => this.renderTag(e, i, arr))}
+            </div>
         `
     }
 

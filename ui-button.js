@@ -1,5 +1,5 @@
 import { css } from 'lit-element';
-import Button from "./src/button";
+import Button from "./src/button.js";
 
 customElements.define('ui-button', class extends Button {
     static get styles() {

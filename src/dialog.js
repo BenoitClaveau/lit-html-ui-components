@@ -10,28 +10,6 @@ export default class Dialog extends Modal {
         return [
             super.styles,
             css`
-                header {
-                    display: flex;
-                    flex-direction: row;
-                    padding: 8px;
-                    margin: 0;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-                footer {
-                    margin: 0;
-                    padding: 0;
-
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: flex-end;
-                }
-                footer > * {
-                    margin: 8px;
-                }
-                footer > *:last-child {
-                    margin-right: 24px;
-                }
             `
         ];
     }

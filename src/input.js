@@ -16,19 +16,16 @@ export default class Input extends LitElement {
         return css`
             :host {
                 display: flex;
-            }
-            .container {
-                display: flex;
                 flex-direction: row;
                 align-items: center;
                 border-radius: 4px;
                 background-color: white;
                 color: #111
             }
-            .container > *:first-child {
+            *:first-child {
                 margin-left: 8px;
             }
-            .container > *:last-child {
+            *:last-child {
                 margin-right: 8px;
             }
             input {
@@ -52,15 +49,20 @@ export default class Input extends LitElement {
         return {
             placeholder: String,
             value: String,
+			type: String,
+			autofocus: Boolean
         }
     }
 
+	constructor() {
+		super();
+		this.type = "text";
+	}
+
     render() {
         return html`
-            <div class="container">
-                ${ this.renderInput()}
-                ${ this.renderClearButton()}
-            </div>
+            ${ this.renderInput()}
+            ${ this.renderClearButton()}
         `;
     }
 
@@ -68,12 +70,15 @@ export default class Input extends LitElement {
         const {
             onKeyUp,
             value,
-            placeholder
+            placeholder,
+			type,
+			autofocus
         } = this;
 
         return html`
             <input
-                type="text"
+                .type="${type}"
+				?autofocus="${autofocus}"
                 @keyup="${onKeyUp}"
                 .value="${value ? value : null}"
                 placeholder="${placeholder ? placeholder : ''}"

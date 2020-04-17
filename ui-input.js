@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import Input from "./src/input";
+import Input from "./src/input.js";
 
 /**
  * https://codepen.io/_emattiazzi/pen/ZWgWKw
@@ -13,8 +13,13 @@ customElements.define('ui-input', class extends Input {
         return [
             super.styles,
             css`
-                input {
-                    outline: var(--ui-input-outline, 1px solid var(--accent-color));
+                :host {
+                    background-color: var(--ui-input-background-color);
+                    color: var(--ui-input-color);
+
+                }
+                :host(:host:focus-within) {
+                    box-shadow: 0 0 0 1px var(--accent-color);
                 }
             `
         ]

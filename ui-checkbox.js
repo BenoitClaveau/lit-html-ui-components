@@ -1,5 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
-import Checkbox from "./src/checkbox";
+import Checkbox from "./src/checkbox.js";
 
 customElements.define('ui-checkbox', class extends Checkbox {
 });

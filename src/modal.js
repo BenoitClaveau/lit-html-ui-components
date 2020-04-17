@@ -1,7 +1,6 @@
 import { LitElement, html, css } from "lit-element";
 import "@polymer/paper-dialog/paper-dialog.js";
 import "@polymer/paper-dialog-scrollable/paper-dialog-scrollable.js";
-import { styleMap } from "lit-html/directives/style-map.js";
 
 export default class Modal extends LitElement {
 
@@ -9,10 +8,6 @@ export default class Modal extends LitElement {
         return css`
             :host {
                 background-color: white;
-            }
-            paper-dialog > * {
-                margin: 0;
-                padding: 0;
             }
         `;
     }

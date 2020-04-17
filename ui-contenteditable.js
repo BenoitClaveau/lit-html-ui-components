@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
-import ContentEditableElement from "./src/contenteditable-element";
-import ContentEditable from "./src/contenteditable";
+import ContentEditableElement from "./src/contenteditable-element.js";
+import ContentEditable from "./src/contenteditable.js";
 
 customElements.define('ui-contenteditable-element', class extends ContentEditableElement {
 });

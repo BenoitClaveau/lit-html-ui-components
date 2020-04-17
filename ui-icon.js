@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit-element';
-import { styleMap } from 'lit-html/directives/style-map';
-import "./src/iconset";
+import { styleMap } from 'lit-html/directives/style-map.js';
+import "./src/iconset.js";
 
 export default class UiIcon extends LitElement {
 
