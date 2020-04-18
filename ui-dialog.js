@@ -19,7 +19,7 @@ customElements.define('ui-dialog', class extends Dialog {
                     max-height: var(--ui-dialog-max-height, 100vh);
                 }
 				paper-dialog-scrollable {
-                    height: calc(100% - 120px);
+                    height: calc(100% - 148px);
                 }
             `
         ];

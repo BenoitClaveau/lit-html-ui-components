@@ -12,6 +12,11 @@ customElements.define('ui-button', class extends Button {
                     color: #000;
                     border-radius: 4px;
                 }
+                slot {
+                    font-family: Roboto;
+                    font-weight: 500;
+                    fot-size: 16px;
+                }
                 :host(.icon-button) {
                     --ui-button-padding-left: 0;
                     --ui-button-padding-right: 0;

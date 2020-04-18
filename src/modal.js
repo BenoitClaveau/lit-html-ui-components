@@ -55,17 +55,16 @@ export default class Modal extends LitElement {
     }
 
     renderContent() {
-        if (!this.opened) return null;;
         return html`
-        <header>
-            ${ this.renderHeader && this.renderHeader()}
-        </header>
-        <paper-dialog-scrollable>
-            <div style="margin-bottom: 2px;">${this.opened && this.renderBody()}</div>
-        </paper-dialog-scrollable>
-        <footer>
-            ${ this.renderFooter && this.renderFooter()}
-        </footer>
+	        <header>
+	            ${ this.renderHeader && this.renderHeader()}
+	        </header>
+	        <paper-dialog-scrollable>
+	            <div style="margin-bottom: 2px;">${this.renderBody()}</div>
+	        </paper-dialog-scrollable>
+	        <footer>
+	            ${ this.renderFooter && this.renderFooter()}
+	        </footer>
         `;
     }
 

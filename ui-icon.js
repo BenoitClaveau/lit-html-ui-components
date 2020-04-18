@@ -12,16 +12,20 @@ export default class UiIcon extends LitElement {
     }
 
     render() {
-        const {
+        let {
             width, height, fillColor, strokeColor
         } = window.getComputedStyle(this);
+        if (width === "0px" || width === "auto") width = "18px";
+        if (height === "0px" || height === "auto") height = "18px";
+        if (!fillColor) fillColor = "currentcolor";
+        if (!strokeColor) strokeColor = "none";
         return html`
             <iron-icon
                 style="${styleMap({
-                    "--iron-icon-width": width === "0px" ? "18px" : width,
-                    "--iron-icon-height": height === "0px" ? "18px" : height,
-                    "--iron-icon-fill-color": fillColor || "currentcolor",
-                    "--iron-icon-stroke-color": strokeColor || "none",
+                    "--iron-icon-width": width,
+                    "--iron-icon-height": height,
+                    "--iron-icon-fill-color": fillColor,
+                    "--iron-icon-stroke-color": strokeColor
                 })}"
                 icon="${this.icon}"
                 title="${this.title || this.icon}"

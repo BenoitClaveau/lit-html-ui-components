@@ -17,13 +17,13 @@ export default class Button extends LitElement {
 
                 border: none;
                 outline: none;
+                text-decoration: none;
+
                 box-sizing: border-box;
                 overflow: hidden;
 
-                font-family: Roboto;
-                font-size: 16px;
-                font-weight: 500;
-                text-decoration: none;
+                font-size: inherit;
+                font-weight: inherit;
             }
             #button {
                 cursor: pointer;
@@ -41,6 +41,10 @@ export default class Button extends LitElement {
 
                 background: inherit;
                 color: inherit;
+            }
+            slot {
+                font-size: inherit;
+                font-weight: inherit;
             }
             [disabled] {
                 opacity: 0.6;

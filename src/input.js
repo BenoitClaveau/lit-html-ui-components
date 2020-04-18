@@ -42,6 +42,9 @@ export default class Input extends LitElement {
             input::placeholder {
                 font-weight: 400;
             }
+			ui-icon[icon="close"] {
+				color: #616161;
+			}
         `;
     }
 

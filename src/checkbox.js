@@ -4,14 +4,8 @@ export default class Checkbox extends LitElement {
 
     static get styles() {
         return css`
-            :host {
-                --label-color: #eee;
-            }
-            slot {
-                font-family: Roboto;
-                font-size: 16px;
-                font-weight: 500;
-                color: var(--label-color);
+            label {
+                display: flex;
             }
         `;
     }
