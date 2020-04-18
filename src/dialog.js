@@ -6,13 +6,23 @@ import "../ui-icon.js";
 
 export default class Dialog extends Modal {
 
+    static get styles() {
+        return [
+            super.styles,
+            css`
+                ui-icon[icon="close"] {
+                    width: 24px;
+                    height: 24px;
+                }
+            `
+        ];
+    }
+
     renderHeader() {
         return html`
             ${this.renderTitle()}
             <ui-icon
                 icon="close"
-                height="24px"
-                width="24px"
                 @click="${e => this.opened = false}"
             ></ui-icon>
         `;

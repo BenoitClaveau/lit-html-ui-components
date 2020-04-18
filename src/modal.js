@@ -44,24 +44,28 @@ export default class Modal extends LitElement {
 
     render() {
         if (!this.renderBody) throw new Error("renderBody is not defined.");
-        
         return html`
             <paper-dialog 
                 id="dialog"
                 modal
                 @iron-overlay-opened="${this.patchOverlay}"
                 @iron-overlay-closed="${this.closeHandler}"
-            >
-                <header>
-                    ${ this.opened && this.renderHeader && this.renderHeader()}
-                </header>
-                <paper-dialog-scrollable>
-                    <div id="body">${this.opened && this.renderBody()}</div>
-                </paper-dialog-scrollable>
-                <footer>
-                    ${ this.opened && this.renderFooter && this.renderFooter()}
-                </footer>
-            </paper-dialog>
+            >${this.renderContent()}</paper-dialog>
+        `;
+    }
+
+    renderContent() {
+        if (!this.opened) return null;;
+        return html`
+        <header>
+            ${ this.renderHeader && this.renderHeader()}
+        </header>
+        <paper-dialog-scrollable>
+            <div style="margin-bottom: 2px;">${this.opened && this.renderBody()}</div>
+        </paper-dialog-scrollable>
+        <footer>
+            ${ this.renderFooter && this.renderFooter()}
+        </footer>
         `;
     }
 

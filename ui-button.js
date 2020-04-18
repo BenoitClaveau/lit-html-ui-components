@@ -10,6 +10,7 @@ customElements.define('ui-button', class extends Button {
                     min-height: 36px;
                     background-color: #f0f0f0;
                     color: #000;
+                    border-radius: 4px;
                 }
                 :host(.icon-button) {
                     --ui-button-padding-left: 0;

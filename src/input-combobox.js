@@ -66,8 +66,6 @@ export default class InputCombobox extends Input {
         return html`
             <ui-icon
                 icon="${this.dropdown ? "expand-less" : "expand-more"}"
-                height="18px"
-                width="18px"
                 @click="${e => this.toggle(e)}"
             ></ui-icon>
         `;
