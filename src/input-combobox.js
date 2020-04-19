@@ -18,7 +18,9 @@ export default class InputCombobox extends Input {
                 }
 				ui-icon[icon="expand-less"],
 				ui-icon[icon="expand-more"] {
-					color: #616161;
+                    color: #616161;
+                    flex-grow: 0;
+                    flex-shrink: 0;
 				}
             `
         ];

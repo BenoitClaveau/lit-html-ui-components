@@ -18,9 +18,15 @@ export default class Input extends LitElement {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
+                box-sizing: box-content;
                 border-radius: 4px;
                 background-color: white;
-                color: #111
+                color: #111;
+                height: 36px;
+
+                font-family: Roboto;
+                font-weight: 500;
+                font-size: 16px;
             }
             *:first-child {
                 margin-left: 8px;
@@ -29,20 +35,23 @@ export default class Input extends LitElement {
                 margin-right: 8px;
             }
             input {
-                flex: 1 0 auto;
-                width: 166px;   
-                height: 36px;
-                font-family: Roboto;
-                background-color: transparent;
-                font-size: 16px;
-                font-weight: 500;
+                flex-grow: 1;
                 border: none;
                 outline: none;
+                background-color: transparent;
+
+                width: 100%;
+                height: 100%;
+                font-family: inherit;
+                font-weight: inherit;
+                font-size: inherit;
             }
             input::placeholder {
                 font-weight: 400;
             }
 			ui-icon[icon="close"] {
+                flex-grow: 0;
+                flex-shrink: 0;
 				color: #616161;
 			}
         `;
@@ -69,14 +78,19 @@ export default class Input extends LitElement {
         `;
     }
 
+    getValue() {
+        return this.value;
+    }
+
     renderInput() {
         const {
             onKeyUp,
-            value,
             placeholder,
 			type,
 			autofocus
         } = this;
+
+        const value = this.getValue();
 
         return html`
             <input
@@ -104,7 +118,7 @@ export default class Input extends LitElement {
 
     onKeyUp(e) {
         const path = e.path || (e.composedPath && e.composedPath());
-        const value = path[0].value;
+        const { value } = path[0];
         if (value != this.value) { // le text à changé
             this.dispatchEvent(new CustomEvent('change', {
                 bubbles: true,

@@ -21,6 +21,12 @@ export default class ButtonDialog extends LitElement {
         }
     }
 
+    shouldUpdate(changedProperties) {
+        if (changedProperties.has("opened") || this.opened)
+            return true;
+        return false;
+    }
+
     renderButton() {
         throw new Error("Not implemented!")
     }

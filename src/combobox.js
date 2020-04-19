@@ -16,7 +16,7 @@ export default class Combobox extends LitElement {
     static get styles() {
         return [
             css`
-                #dropdown-container {
+                :host {
                     position: relative;
                     overflow: visible;
                 }
@@ -38,6 +38,14 @@ export default class Combobox extends LitElement {
         super();
         this.clickHandler = (e) => this._clickHandler(e);
         this.resizeHandler = (e) => this._resizeHandler(e);
+
+        this.addEventListener('change', e => this.inputChangeHandler(e));
+        this.addEventListener('submit', e => this.inputSubmitHandler(e));
+        this.addEventListener('clear', e => this.inputClearHandler(e));
+        this.addEventListener('open', e => this.inputOpenHandler(e));
+        this.addEventListener('close', e => this.inputCloseHandler(e));
+
+        this.addEventListener('select', e => this.dropdownSelectHandler(e));
     }
 
     shouldUpdate(changedProperties) {
@@ -58,18 +66,6 @@ export default class Combobox extends LitElement {
         super.disconnectedCallback();
         window.removeEventListener('click', this.clickHandler);
         window.removeEventListener('resize', this.resizeHandler);
-    }
-
-    firstUpdated() {
-        const input = this.shadowRoot.querySelector("#input-container");
-        input.addEventListener('change', e => this.inputChangeHandler(e));
-        input.addEventListener('submit', e => this.inputSubmitHandler(e));
-        input.addEventListener('clear', e => this.inputClearHandler(e));
-        input.addEventListener('open', e => this.inputOpenHandler(e));
-        input.addEventListener('close', e => this.inputCloseHandler(e));
-
-        const dropdown = this.shadowRoot.querySelector("#dropdown-container");
-        dropdown.addEventListener('select', e => this.dropdownSelectHandler(e));
     }
 
     _clickHandler(e) {
@@ -94,19 +90,12 @@ export default class Combobox extends LitElement {
     }
 
     dropdownSelectHandler(e) {
-        // prevent beacause select is re-dispatched   
-        e.preventDefault();
-        e.stopPropagation();
-
+        const path = e.path || (e.composedPath && e.composedPath());
+        if (path[0] === this) return; // Emit par moi-même.
+        
         // j'écrase la valeur de input car data peut ne pas avoir changé et ne pas avoir de re-render.
         this.inputValue = e.detail.item ? this.getInputValue(e.detail.item) : "";
         this.dropdown = false;
-
-        this.dispatchEvent(new CustomEvent("select", {
-            bubbles: true,
-            composed: true,
-            detail: e.detail
-        }));
     }
 
     /**
@@ -123,13 +112,7 @@ export default class Combobox extends LitElement {
      * séléctionner s'il faut un élement.  
      */
     inputSubmitHandler(e) {
-        e.stopPropagation();
         this.dropdown = false;
-        this.dispatchEvent(new CustomEvent("submit", {
-            bubbles: true,
-            composed: true,
-            detail: e.detail
-        }));
     }
 
     inputClearHandler(e) {
@@ -150,15 +133,11 @@ export default class Combobox extends LitElement {
         const { dropdown } = this;
 
         return html`
-            <div id="input-container">
-                ${ this.renderInput()}
-            </div>
-            <div id="dropdown-container">
-                ${ dropdown && this.items && this.items.length ?
-                    this.renderDropdown() :
-                    null
-                }
-            </div>
+            ${ this.renderInput()}
+            ${ dropdown && this.items && this.items.length ?
+                this.renderDropdown() :
+                null
+            }
         `;
     }
 
