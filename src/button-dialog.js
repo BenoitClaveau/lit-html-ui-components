@@ -21,12 +21,6 @@ export default class ButtonDialog extends LitElement {
         }
     }
 
-    shouldUpdate(changedProperties) {
-        if (changedProperties.has("opened") || this.opened)
-            return true;
-        return false;
-    }
-
     renderButton() {
         throw new Error("Not implemented!")
     }
@@ -39,6 +33,7 @@ export default class ButtonDialog extends LitElement {
     }
 
     renderDialog() {
+        if (!this.opened) return null;
         return html`
             <ui-dialog
                 .opened=${this.opened}
