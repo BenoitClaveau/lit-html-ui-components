@@ -7,12 +7,13 @@ export default class ContentEditableElement extends LitElement {
             :host {
                 height: 100%;
                 width: 100%;
+                outline: none;
             }
-            .container {
+            #editable {
                 text-align: center;
             }
-            div:focus {
-                outline: none;
+            #editable:focus {
+                outline: 1px solid var(--accent-color);
             }
         `;
     }
@@ -23,6 +24,11 @@ export default class ContentEditableElement extends LitElement {
         }
     }
 
+    createRenderRoot() {
+        // je délégue la gestion du focus à L'enfant.
+        return this.attachShadow({ mode: "open", delegatesFocus: true });
+    }
+
     // https://gist.github.com/islishude/6ccd1fbf42d1eaac667d6873e7b134f8
     getCaretPos() {
         // ne focntionne pas bien
@@ -31,12 +37,12 @@ export default class ContentEditableElement extends LitElement {
         const selection = document.getSelection();
         if (!selection) return 0;
         const range = selection.getRangeAt(0);
-        range.selectNodeContents(this.container);
+        range.selectNodeContents(this.editable);
         range.setEnd(range.endContainer, range.beginOffset);
         const pos = range.toString().length;
 
         // const clonedRange = range.cloneRange();
-        // clonedRange.selectNodeContents(this.container);
+        // clonedRange.selectNodeContents(this.editable);
         // clonedRange.setStart(range.startContainer, range.startOffset);
         // clonedRange.setEnd(range.endContainer, range.endOffset);
         // console.log(pos)
@@ -48,26 +54,26 @@ export default class ContentEditableElement extends LitElement {
     setCaretPos(pos) {
         const selection = document.getSelection();
         if (!selection) return;
-        selection.collapse(this.container, pos);
+        selection.collapse(this.editable, pos);
     }
 
     setCaretToEnd() {
         const selection = document.getSelection();
         const range = selection.getRangeAt(0);
         //range.setEnd(range.endContainer, range.endOffset);
-        selection.collapse(this.container, range.endOffset);
+        selection.collapse(this.editable, range.endOffset);
     }
 
     focus(setCaretToEnd) {
-        if (this.container) {
-            this.container.focus();
+        if (this.editable) {
+            this.editable.focus();
             if (setCaretToEnd) this.setCaretToEnd();
         }
  
-        if (!this.container) {
+        if (!this.editable) {
             // j'attend l'update pour mettre le focus
             this.updateComplete.then(() => {
-                this.container.focus();
+                this.editable.focus();
                 if (setCaretToEnd) this.setCaretToEnd();
             })
         }
@@ -78,15 +84,16 @@ export default class ContentEditableElement extends LitElement {
         // si pas de changement je ne fais rien
         // cela évite de gérer la position du curseur.
         // cf https://stackoverflow.com/questions/22677931/react-js-onchange-event-for-contenteditable
-        if (res && this.container)
-            return this.container.innerText != this.value
+        if (res && this.editable)
+            return this.editable.innerText != this.value;
         return res;
     }
 
     render() {
         return html`
             <div 
-                class="container" 
+                id="editable" 
+                tabindex="1"
                 contenteditable
                 @keypress=${e => this.keypressHandler(e)}
                 @keyup=${e => this.keyupHandler(e)}
@@ -95,7 +102,7 @@ export default class ContentEditableElement extends LitElement {
     }
 
     firstUpdated() {
-        this.container = this.shadowRoot.querySelector(".container");
+        this.editable = this.shadowRoot.querySelector("#editable");
     }
 
     keypressHandler(e) {
@@ -114,7 +121,16 @@ export default class ContentEditableElement extends LitElement {
     keyupHandler(e) {
         const path = e.path || (e.composedPath && e.composedPath());
         const value = path[0].innerText;
-        if (!this.value && e.key == "Backspace") {
+
+        if (value != this.value) { 
+            this.dispatchEvent(new CustomEvent('change', {
+                bubbles: true,
+                composed: true,
+                detail: { value }
+            }));
+        }
+
+        if (!this.value && ["Backspace", "Delete"].some(p => e.key === p)) {
             this.dispatchEvent(new CustomEvent('remove', {
                 bubbles: true,
                 composed: true,

@@ -87,44 +87,6 @@ export default class Button extends LitElement {
         }
     }
 
-    // constructor() {
-    //     super();
-
-        
-
-    //     // this._observer = new MutationObserver(() => {
-    //     //     this.setAttribute("aria-label", this.textContent);
-    //     // });
-    // }
-
-    // connectedCallback() {
-    //     this.setAttribute("role", "button");
-    //     this.setAttribute("tabindex", "0");
-
-    //     this._observer.observe(this, {
-    //         childList: true,
-    //         characterData: true,
-    //         subtree: true
-    //     });
-    //     return super.connectedCallback();
-    // }
-
-    // disconnectedCallback() {
-    //     this._observer.disconnect();
-    // }
-
-
-    // attributeChangedCallback() {
-    //     // only is called for the disabled attribute due to observedAttributes
-    //     if (this.disabled) {
-    //         this.removeAttribute("tabindex");
-    //         this.setAttribute("aria-disabled", "true");
-    //     } else {
-    //         this.setAttribute("tabindex", "0");
-    //         this.setAttribute("aria-disabled", "false");
-    //     }
-    // }
-
     cancelRipple() {
         if (!this.circle) return;
         const circle = this.circle;

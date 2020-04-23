@@ -69,7 +69,12 @@ export default class Input extends LitElement {
 	constructor() {
 		super();
 		this.type = "text";
-	}
+    }
+    
+    createRenderRoot() {
+        // je délégue la gestion du focus à L'enfant.
+        return this.attachShadow({ mode: "open", delegatesFocus: true });
+    }
 
     render() {
         return html`
@@ -84,7 +89,6 @@ export default class Input extends LitElement {
 
     renderInput() {
         const {
-            onKeyUp,
             placeholder,
 			type,
 			autofocus
@@ -96,15 +100,12 @@ export default class Input extends LitElement {
             <input
                 .type="${type}"
 				?autofocus="${autofocus}"
-                @keyup="${onKeyUp}"
+                @keypress=${e => this.keypressHandler(e)}
+                @keyup=${e => this.keyupHandler(e)}
                 .value="${value ? value : null}"
                 placeholder="${placeholder ? placeholder : ''}"
             />
         `;
-    }
-
-    focus() {
-        this.shadowRoot.querySelector("input").focus();
     }
 
     renderClearButton() {
@@ -116,7 +117,20 @@ export default class Input extends LitElement {
         `;
     }
 
-    onKeyUp(e) {
+    keypressHandler(e) {
+        if (e.key == "Enter") {
+            // j'annule l'event car je ne veux d'entrée.
+            // cela sera géré par contenteditable
+            e.preventDefault();
+            this.dispatchEvent(new CustomEvent('submit', {
+                bubbles: true,
+                composed: true,
+                detail: { }
+            }));
+        }
+    }
+
+    keyupHandler(e) {
         const path = e.path || (e.composedPath && e.composedPath());
         const { value } = path[0];
         if (value != this.value) { // le text à changé
@@ -126,14 +140,6 @@ export default class Input extends LitElement {
                 detail: { value }
             }));
             return;
-        }
-        if (e.key == "Enter") {
-            // ↵ dans l'input. J'envoie un évenement pour pouvoir séléctionner un élement.
-            this.dispatchEvent(new CustomEvent('submit', {
-                bubbles: true,
-                composed: true,
-                detail: { value }
-            }));
         }
     };
 
