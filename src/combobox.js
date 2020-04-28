@@ -16,7 +16,7 @@ export default class Combobox extends LitElement {
     static get styles() {
         return [
             css`
-                :host {
+                #dropdown {
                     position: relative;
                     overflow: visible;
                 }
@@ -36,6 +36,7 @@ export default class Combobox extends LitElement {
 
     constructor() {
         super();
+        this.items = [];
         this.clickHandler = (e) => this._clickHandler(e);
         this.resizeHandler = (e) => this._resizeHandler(e);
 
@@ -135,7 +136,7 @@ export default class Combobox extends LitElement {
         return html`
             ${ this.renderInput()}
             ${ dropdown && this.items && this.items.length ?
-                this.renderDropdown() :
+                html`<div id="dropdown">${this.renderDropdown()}</div>` :
                 null
             }
         `;

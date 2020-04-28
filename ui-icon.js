@@ -15,8 +15,8 @@ export default class UiIcon extends LitElement {
         let {
             width, height, fillColor, strokeColor
         } = window.getComputedStyle(this);
-        if (width === "0px" || width === "auto") width = "18px";
-        if (height === "0px" || height === "auto") height = "18px";
+        if (width === "0px" || width === "auto") width = "24px";
+        if (height === "0px" || height === "auto") height = "24px";
         if (!fillColor) fillColor = "currentcolor";
         if (!strokeColor) strokeColor = "none";
         return html`

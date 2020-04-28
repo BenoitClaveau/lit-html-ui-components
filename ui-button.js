@@ -17,12 +17,6 @@ customElements.define('ui-button', class extends Button {
                     font-weight: 500;
                     fot-size: 16px;
                 }
-                :host(.icon-button) {
-                    --ui-button-padding-left: 0;
-                    --ui-button-padding-right: 0;
-                    --ui-button-padding-top: 0;
-                    --ui-button-padding-bottom: 0;
-                }
                 #button {
                     padding: var(--ui-button-padding);
                     padding-left: var(--ui-button-padding-left, 16px);

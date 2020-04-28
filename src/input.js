@@ -36,6 +36,8 @@ export default class Input extends LitElement {
             }
             input {
                 flex-grow: 1;
+                box-sizing: border-box;
+
                 border: none;
                 outline: none;
                 background-color: transparent;
@@ -44,7 +46,6 @@ export default class Input extends LitElement {
                 height: 100%;
                 font-family: inherit;
                 font-weight: inherit;
-                font-size: inherit;
             }
             input::placeholder {
                 font-weight: 400;
