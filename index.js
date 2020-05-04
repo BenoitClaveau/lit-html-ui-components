@@ -1,5 +1,6 @@
 export { default as Iconset } from './src/iconset.js';
 export { default as Button } from './src/button.js';
+export { default as Dropdownable } from './src/dropdownable.js';
 export { default as Combobox } from './src/combobox.js';
 export { default as Autocomplete } from './src/autocomplete.js';
 export { default as Tags } from './src/tags.js';

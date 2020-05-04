@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import Dropdownable from "./dropdownable.js"
 
 /**
  * events:
@@ -11,26 +12,20 @@ import { LitElement, html, css } from 'lit-element';
  * - renderInput
  * - renderDropdown
  */
-export default class Combobox extends LitElement {
+export default class Combobox extends Dropdownable {
 
     static get styles() {
         return [
-            css`
-                #dropdown {
-                    position: relative;
-                    overflow: visible;
-                }
-            `
+            super.styles
         ];
     }
 
     static get properties() {
         return {
+            ...super.properties,
             items: Array,
             placeholder: String,
-            value: Object,      // value du composant
             inputValue: String, // text bindé dans l'input c'est une copie interne de value 
-            dropdown: Boolean,  // true si dropdown est visible,
         }
     }
 
@@ -40,69 +35,15 @@ export default class Combobox extends LitElement {
         this.clickHandler = (e) => this._clickHandler(e);
         this.resizeHandler = (e) => this._resizeHandler(e);
 
-        this.addEventListener('change', e => this.inputChangeHandler(e));
-        this.addEventListener('submit', e => this.inputSubmitHandler(e));
-        this.addEventListener('clear', e => this.inputClearHandler(e));
-        this.addEventListener('open', e => this.inputOpenHandler(e));
-        this.addEventListener('close', e => this.inputCloseHandler(e));
-
-        this.addEventListener('select', e => this.dropdownSelectHandler(e));
-    }
-
-    shouldUpdate(changedProperties) {
-        if (changedProperties.has('value')) { // value a été changé depuis l'exterieur, j'écrase la valeur
-            this.dropdown = false;
-            this.initInputValue();
-        }
-        return super.shouldUpdate(changedProperties);
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        window.addEventListener('click', this.clickHandler);
-        window.addEventListener('resize', this.resizeHandler);
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        window.removeEventListener('click', this.clickHandler);
-        window.removeEventListener('resize', this.resizeHandler);
-    }
-
-    _clickHandler(e) {
-        const path = e.path || (e.composedPath && e.composedPath());
-        const inside = path.some(e => e == this);
-        if (!inside && this.dropdown) {
-            this.dropdown = false;
-        }
-    }
-
-    _resizeHandler(e) {
-        this.dropdown = false;
-    }
-
-    inputOpenHandler(e) {
-        this.dropdown = true;
-    }
-
-    inputCloseHandler(e) {
-        e.stopPropagation();
-        this.dropdown = false;
-    }
-
-    dropdownSelectHandler(e) {
-        const path = e.path || (e.composedPath && e.composedPath());
-        if (path[0] === this) return; // Emit par moi-même.
-        
-        // j'écrase la valeur de input car data peut ne pas avoir changé et ne pas avoir de re-render.
-        this.inputValue = e.detail.item ? this.getInputValue(e.detail.item) : "";
-        this.dropdown = false;
+        this.addEventListener('change', e => this.changeHandler(e));
+        this.addEventListener('submit', e => this.submitHandler(e));
+        this.addEventListener('clear', e => this.clearHandler(e));
     }
 
     /**
      * Le texte dans l'input à changé je modifie inputValue uniquement (traitement interne).
      */
-    inputChangeHandler(e) {
+    changeHandler(e) {
         e.stopPropagation();
         this.inputValue = e.detail.value; // je change uniquement l'affichage pas value qui correspond à la valeur séléctionné. 
         this.dropdown = !!this.inputValue;
@@ -112,11 +53,11 @@ export default class Combobox extends LitElement {
      * Lors d'un submit dans l'input j'envoie un événement pour permettre de
      * séléctionner s'il faut un élement.  
      */
-    inputSubmitHandler(e) {
+    submitHandler(e) {
         this.dropdown = false;
     }
 
-    inputClearHandler(e) {
+    clearHandler(e) {
         e.stopPropagation();
         this.inputValue = "";
         this.dropdown = false;
@@ -130,16 +71,18 @@ export default class Combobox extends LitElement {
         }));
     }
 
-    render() {
-        const { dropdown } = this;
+    /**
+     * Le composant principale doit être un input. Je préfère renommer la fonction renderComponent en renderInput.
+     */
+    renderComponent() {
+        return this.renderInput();
+    }
 
-        return html`
-            ${ this.renderInput()}
-            ${ dropdown && this.items && this.items.length ?
-                html`<div id="dropdown">${this.renderDropdown()}</div>` :
-                null
-            }
-        `;
+    /**
+     * Le composant principale doit être un input avec un value de type text. Je préfère renommer la fonction initComponent en initInputValue.
+     */
+    initComponent() {
+        return this.initInputValue();
     }
 
     /**

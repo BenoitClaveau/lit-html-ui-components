@@ -27,8 +27,8 @@ export default class Autocomplete extends Combobox {
     /**
      * surcharge de input change pour appeler fecth via un debounce
      */
-    inputChangeHandler(e) {
-        super.inputChangeHandler(e);
+    changeHandler(e) {
+        super.changeHandler(e);
         this.debounceFetch(e);
     }
 
