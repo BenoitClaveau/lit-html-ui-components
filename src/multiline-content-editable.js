@@ -1,20 +1,19 @@
 import { LitElement, html, css } from 'lit-element';
 
-export default class ContentEditable extends LitElement {
+export default class MultilineContentEditable extends LitElement {
 
     static get styles() {
         return css`
-            .container {
-                height: 100%;
-                width: 100%;
-                box-sizing: border-box;
+            :host {
+                display: flex;
+                flex-direction: column;
             }
         `;
     }
 
     static get properties() {
         return {
-            values: String
+            values: Array
         }
     }
 
@@ -22,26 +21,18 @@ export default class ContentEditable extends LitElement {
         super();
         this.focusIndex = null;
         this.setCaretToEnd = false;
+        this.addEventListener("submit", e => this.submitHandler(e))
+        this.addEventListener("reset", e => this.resetHandler(e))
+        // this.addEventListener("input", e => this.inputHandler(e))
     }
     
     render() {
-        return html`
-            <div 
-                class="container"
-                @add=${e => this.addHandler(e)}
-                @remove=${e => this.removeHandler(e)}
-                @input=${e => this.inputHandler(e)}
-            >${this.values.map((item, i) => this.renderItem(item, i))}</div>
-        `
-    }
-
-    firstUpdated() {
-        this.container = this.shadowRoot.querySelector(".container");
+        return html`${this.values.map((item, i) => this.renderItem(item, i))}`
     }
 
     updated(changedProperties) {
         if (this.focusIndex !== null) {
-            const elems = [...this.container.children];
+            const elems = [...this.children];
             const elem = elems[this.focusIndex];
             elem.focus(this.setCaretToEnd);
             this.focusIndex = null;
@@ -55,7 +46,7 @@ export default class ContentEditable extends LitElement {
 
     addHandler(e) {
         e.stopPropagation(); // je modifie add pour ajouter item et index.
-        const index = [...this.container.children].indexOf(e.target);
+        const index = [...this.children].indexOf(e.target);
         const item = this.values[index];
 
         this.focusIndex = index + 1;
@@ -70,9 +61,9 @@ export default class ContentEditable extends LitElement {
         }));
     }
 
-    removeHandler(e) {
+    resetHandler(e) {
         e.stopPropagation(); // je modifie remove pour ajouter item et index.
-        const index = [...this.container.children].indexOf(e.target);
+        const index = [...this.children].indexOf(e.target);
         const item = this.values[index];
 
         this.focusIndex = index - 1;
@@ -88,19 +79,19 @@ export default class ContentEditable extends LitElement {
         }));
     }
 
-    inputHandler(e) {
-        const index = [...this.container.children].indexOf(e.target);
-        const item = this.values[index];
-        const path = e.path || (e.composedPath && e.composedPath());
-        const value = path[0].innerText;
-        this.dispatchEvent(new CustomEvent('change', {
-            bubbles: true,
-            composed: true,
-            detail: { 
-                index,
-                item,
-                value
-             }
-        }));
-    }
+    // inputHandler(e) {
+    //     const index = [...this.children].indexOf(e.target);
+    //     const item = this.values[index];
+    //     const path = e.path || (e.composedPath && e.composedPath());
+    //     const value = path[0].innerText;
+    //     this.dispatchEvent(new CustomEvent('change', {
+    //         bubbles: true,
+    //         composed: true,
+    //         detail: { 
+    //             index,
+    //             item,
+    //             value
+    //          }
+    //     }));
+    // }
 }

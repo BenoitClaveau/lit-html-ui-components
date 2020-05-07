@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { live } from "lit-html/directives/live.js";
 import "../ui-icon.js";
 /**
  * events:
@@ -103,7 +104,7 @@ export default class Input extends LitElement {
 				?autofocus="${autofocus}"
                 @keypress=${e => this.keypressHandler(e)}
                 @keyup=${e => this.keyupHandler(e)}
-                .value="${value ? value : null}"
+                .value="${live(value ? value : null)}"
                 placeholder="${placeholder ? placeholder : ''}"
             />
         `;

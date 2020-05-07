@@ -35,21 +35,21 @@ export default class InputCombobox extends Input {
 
     constructor() {
         super();
-        this.clickHandler = (e) => this._clickHandler(e);
+        this.outsideHandler = (e) => this._outsideClickHandler(e);
     }
 
     connectedCallback() {
         super.connectedCallback();
-        window.addEventListener('click', this.clickHandler);
+        window.addEventListener('mousedown', this.outsideHandler);
         this.addEventListener('keydown', e => this.keydownHandler(e));   
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        window.removeEventListener('click', this.clickHandler);
+        window.removeEventListener('mousedown', this.outsideHandler);
     }
 
-    _clickHandler(e) {
+    _outsideClickHandler(e) {
         const path = e.path || (e.composedPath && e.composedPath());
         const inside = path.some(e => e == this);
         if (inside && this.dropdown) {

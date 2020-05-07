@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { live } from "lit-html/directives/live.js";
 
 export default class Checkbox extends LitElement {
 
@@ -16,16 +17,20 @@ export default class Checkbox extends LitElement {
         }
     }
 
+    get isChecked() {
+        return this.checked == "" || this.checked == true;
+    }
+
     render() {
         const {
-            checked,
+            isChecked,
         } = this;
 
         return html`
             <label>
                 <input 
                     type="checkbox"
-                    ?checked=${checked}
+                    .checked="${live(isChecked)}"
                     @change=${e => this.changeHandler(e)}
                 >
                 ${ this.renderLabel() }
