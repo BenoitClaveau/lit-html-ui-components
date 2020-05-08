@@ -23,7 +23,7 @@ export default class MultilineContentEditable extends LitElement {
         this.setCaretToEnd = false;
         this.addEventListener("submit", e => this.submitHandler(e))
         this.addEventListener("reset", e => this.resetHandler(e))
-        // this.addEventListener("input", e => this.inputHandler(e))
+        this.addEventListener("input", e => this.inputHandler(e))
     }
     
     render() {
@@ -32,9 +32,9 @@ export default class MultilineContentEditable extends LitElement {
 
     updated(changedProperties) {
         if (this.focusIndex !== null) {
-            const elems = [...this.children];
+            const elems = [...this.shadowRoot.children];
             const elem = elems[this.focusIndex];
-            elem.focus(this.setCaretToEnd);
+            elem.focus({ setCaretToEnd: this.setCaretToEnd });
             this.focusIndex = null;
             this.setCaretToEnd = null;
         }
@@ -44,9 +44,14 @@ export default class MultilineContentEditable extends LitElement {
         throw new Error("Not implemented!");
     }
 
-    addHandler(e) {
-        e.stopPropagation(); // je modifie add pour ajouter item et index.
-        const index = [...this.children].indexOf(e.target);
+    submitHandler(e) {
+        const path = e.path || (e.composedPath && e.composedPath());
+        if (path[0] === this) return; // Emit par moi-même.
+
+        const i = path.indexOf(this);
+        const child = path[i-2]; // -2 à cause du shadowRoot (shadowRoot + child = 2)
+
+        const index = [...this.shadowRoot.children].indexOf(child);
         const item = this.values[index];
 
         this.focusIndex = index + 1;
@@ -62,8 +67,14 @@ export default class MultilineContentEditable extends LitElement {
     }
 
     resetHandler(e) {
-        e.stopPropagation(); // je modifie remove pour ajouter item et index.
-        const index = [...this.children].indexOf(e.target);
+        const path = e.path || (e.composedPath && e.composedPath());
+        if (path[0] === this) return; // Emit par moi-même.
+
+        const i = path.indexOf(this);
+        const child = path[i-2]; // -2 à cause du shadowRoot (shadowRoot + child = 2)
+
+        
+        const index = [...this.shadowRoot.children].indexOf(child);
         const item = this.values[index];
 
         this.focusIndex = index - 1;
@@ -79,19 +90,19 @@ export default class MultilineContentEditable extends LitElement {
         }));
     }
 
-    // inputHandler(e) {
-    //     const index = [...this.children].indexOf(e.target);
-    //     const item = this.values[index];
-    //     const path = e.path || (e.composedPath && e.composedPath());
-    //     const value = path[0].innerText;
-    //     this.dispatchEvent(new CustomEvent('change', {
-    //         bubbles: true,
-    //         composed: true,
-    //         detail: { 
-    //             index,
-    //             item,
-    //             value
-    //          }
-    //     }));
-    // }
+    inputHandler(e) {
+        const index = [...this.children].indexOf(e.target);
+        const item = this.values[index];
+        const path = e.path || (e.composedPath && e.composedPath());
+        const value = path[0].innerText;
+        this.dispatchEvent(new CustomEvent('change', {
+            bubbles: true,
+            composed: true,
+            detail: { 
+                index,
+                item,
+                value
+             }
+        }));
+    }
 }

@@ -12,6 +12,7 @@ customElements.define('touchable-highlight', class extends Button {
                 }
                 #button {
                     padding: 0;
+                    
                 }
             `
         ];

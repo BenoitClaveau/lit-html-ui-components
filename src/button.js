@@ -26,7 +26,12 @@ export default class Button extends LitElement {
                 font-weight: inherit;
             }
             #button {
-                cursor: pointer;
+                flex: 1 0 auto;
+                
+                display: inherit;
+                flex-direction: inherit;
+                align-items: inherit;
+                justify-content: inherit;
 
                 border: none;
                 
@@ -41,6 +46,8 @@ export default class Button extends LitElement {
 
                 background: inherit;
                 color: inherit;
+
+                cursor: pointer;
             }
             slot {
                 font-size: inherit;

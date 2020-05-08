@@ -26,44 +26,41 @@ export default class ContentEditable extends LitElement {
         return this; //.attachShadow({ mode: "open", delegatesFocus: true });
     }
 
-    // // https://gist.github.com/islishude/6ccd1fbf42d1eaac667d6873e7b134f8
-    // getCaretPos() {
-    //     // ne focntionne pas bien
-    //     // a verifier
+    // https://gist.github.com/islishude/6ccd1fbf42d1eaac667d6873e7b134f8
+    getCaretPos() {
+        // ne focntionne pas bien
+        // a verifier
 
-    //     const selection = document.getSelection();
-    //     if (!selection) return 0;
-    //     const range = selection.getRangeAt(0);
-    //     range.selectNodeContents(this.editable);
-    //     range.setEnd(range.endContainer, range.beginOffset);
-    //     return range.startOffset;
-    // }
+        const selection = document.getSelection();
+        if (!selection) return 0;
+        const range = selection.getRangeAt(0);
+        range.selectNodeContents(this);
+        range.setEnd(range.endContainer, range.beginOffset);
+        return range.startOffset;
+    }
 
-    // setCaretPos(pos) {
-    //     const selection = document.getSelection();
-    //     if (!selection) return;
-    //     selection.collapse(this, pos);
-    // }
+    setCaretPos(pos) {
+        const selection = document.getSelection();
+        if (!selection) return;
+        selection.collapse(this, pos);
+    }
 
-    // setCaretToEnd() {
-    //     const selection = document.getSelection();
-    //     const range = selection.getRangeAt(0);
-    //     selection.collapse(this, range.endOffset);
-    // }
+    setCaretToEnd() {
+        const selection = document.getSelection();
+        const range = selection.getRangeAt(0);
+        range.selectNodeContents(this);
+        range.collapse(false);
 
-    // focus(setCaretToEnd) {
-    //     if (this.editable) {
-    //         this.editable.focus();
-    //         if (setCaretToEnd) this.setCaretToEnd();
-    //     }
- 
-    //     if (!this.editable) {
-    //         // j'attend l'update pour mettre le focus
-    //         this.updateComplete.then(() => {
-    //             if (setCaretToEnd) this.setCaretToEnd();
-    //         })
-    //     }
-    // }
+        // range.setStart(range.endContainer, 5);
+        // range.setEnd(range.endContainer, range.endOffset);
+
+        // selection.collapse(this, range.endOffset);
+    }
+
+    focus({ setCaretToEnd } = {}) {
+        super.focus();
+        if (setCaretToEnd) this.setCaretToEnd();
+    }
 
     shouldUpdate(changedProperties) {
         const res = super.shouldUpdate(changedProperties);
