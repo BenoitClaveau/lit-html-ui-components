@@ -9,10 +9,7 @@ customElements.define('touchable-highlight', class extends Button {
                 :host {
                     background-color: transparent;
                     cursor: pointer;
-                }
-                #button {
-                    padding: 0;
-                    
+                    --padding: 0px;
                 }
             `
         ];

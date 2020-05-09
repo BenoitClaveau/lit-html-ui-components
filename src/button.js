@@ -28,11 +28,6 @@ export default class Button extends LitElement {
             #button {
                 flex: 1 0 auto;
                 
-                display: inherit;
-                flex-direction: inherit;
-                align-items: inherit;
-                justify-content: inherit;
-
                 border: none;
                 
                 min-height: inherit;
@@ -48,6 +43,17 @@ export default class Button extends LitElement {
                 color: inherit;
 
                 cursor: pointer;
+
+                display: var(--display, inherit);
+                flex-direction: var(--flex-direction, inherit);
+                align-items: var(--align-items, inherit);
+                justify-content: var(--justify-content, inherit);
+
+                padding: var(--padding);
+                padding-left: var(--padding-left);
+                padding-right: var(--padding-right);
+                padding-top: var(--padding-top);
+                padding-bottom: var(--padding-bottom);
             }
             slot {
                 font-size: inherit;

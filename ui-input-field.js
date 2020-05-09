@@ -9,7 +9,7 @@ customElements.define("ui-input-field", class extends Field {
             super.styles,
             css`
                ui-input {
-                    --ui-input-outline: none;
+                    --outline: none;
                     background-color: #f0f0f0;
                }
             `

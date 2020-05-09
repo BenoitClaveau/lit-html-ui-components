@@ -8,8 +8,8 @@ export default class ButtonDialog extends LitElement {
         return [
             css`
                 ui-dialog {
-                    --ui-dialog-width: 95vw;
-                    --ui-dialog-height: 95vh;
+                    --width: 95vw;
+                    --height: 95vh;
                 }
             `
         ];
