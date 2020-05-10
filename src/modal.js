@@ -13,8 +13,6 @@ export default class Modal extends LitElement {
                 display: flex;
                 justify-content: flex-end;
             }
-            paper-dialog-scrollable {
-            }
             footer {
                 display: flex;
                 justify-content: flex-end;

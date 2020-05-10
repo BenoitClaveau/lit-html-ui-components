@@ -36,6 +36,6 @@ customElements.define('ui-dialog', class extends Dialog {
     firstUpdated() {
         super.firstUpdated();
         this.scrollable = this.dialog.querySelector("paper-dialog-scrollable");
-        this.scrollable.scrollTarget.style.maxHeight = `100%`;
+        this.scrollable.scrollTarget.style.minHeight = `100%`;
     }
 });
