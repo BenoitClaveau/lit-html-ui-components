@@ -82,7 +82,7 @@ export default class Modal extends LitElement {
 
     closeHandler(e) {
         // j'arrete la propagation dans s'il y a plusieurs dialog ouverte.
-        // et comme l'evenement close est stoppe. Je supprime moi meme le backDrop.
+        // et comme l'evenement close est stoppé. Je supprime moi meme le backDrop.
         e.stopPropagation();
         this.backdropElement.remove();
         this.dispatchEvent(new CustomEvent("close", {

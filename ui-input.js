@@ -16,9 +16,6 @@ customElements.define('ui-input', class extends Input {
                 :host {
                     background-color: #f1f1f1;
                 }
-                :host(:host:focus-within) {
-                    box-shadow: 0 0 0 1px var(--accent-color);
-                }
             `
         ]
     }

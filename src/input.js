@@ -20,6 +20,8 @@ export default class Input extends LitElement {
                 flex-direction: row;
                 align-items: center;
                 box-sizing: box-content;
+                outline: none;
+
                 border-radius: 4px;
                 background-color: white;
                 color: #111;
@@ -28,6 +30,9 @@ export default class Input extends LitElement {
                 font-family: Roboto;
                 font-weight: 500;
                 font-size: 16px;
+            }
+            :host(:host:focus-within) {
+                box-shadow: 0 0 0 1px var(--accent-color);
             }
             *:first-child {
                 margin-left: 8px;
@@ -121,13 +126,17 @@ export default class Input extends LitElement {
 
     keypressHandler(e) {
         if (e.key == "Enter") {
+            const path = e.path || (e.composedPath && e.composedPath());
+            const { value } = path[0];
             // j'annule l'event car je ne veux d'entrée.
             // cela sera géré par contenteditable
             e.preventDefault();
             this.dispatchEvent(new CustomEvent('submit', {
                 bubbles: true,
                 composed: true,
-                detail: { }
+                detail: { 
+                    value
+                }
             }));
         }
     }

@@ -22,10 +22,10 @@ export default class UiIcon extends LitElement {
         return html`
             <iron-icon
                 style="${styleMap({
-                    "--width": width,
-                    "--height": height,
-                    "--fill-color": fillColor,
-                    "--stroke-color": strokeColor
+                    "--iron-icon-width": width,
+                    "--iron-icon-height": height,
+                    "--iron-icon-fill-color": fillColor,
+                    "--iron-icon-stroke-color": strokeColor
                 })}"
                 icon="${this.icon}"
                 title="${this.title || this.icon}"
