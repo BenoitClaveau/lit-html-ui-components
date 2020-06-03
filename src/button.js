@@ -15,6 +15,8 @@ export default class Button extends LitElement {
                 align-items: center;
                 justify-content: center;
 
+                flex-shrink: 0;
+
                 border: none;
                 outline: none;
                 text-decoration: none;
