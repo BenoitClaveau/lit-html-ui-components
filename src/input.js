@@ -16,23 +16,23 @@ export default class Input extends LitElement {
     static get styles() {
         return css`
             :host {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                box-sizing: box-content;
+                display: grid;
+                grid-template-columns: 1fr 24px;
+                grid-template-rows: 36px;
                 outline: none;
 
                 border-radius: 4px;
+                -moz-outline-radius: 4px;
+
                 background-color: white;
                 color: #111;
-                height: 36px;
-
+                
                 font-family: Roboto;
                 font-weight: 500;
                 font-size: 16px;
             }
             :host(:host:focus-within) {
-                box-shadow: 0 0 0 1px var(--accent-color);
+                outline: 1px solid var(--accent-color);
             }
             *:first-child {
                 margin-left: 8px;
@@ -44,12 +44,12 @@ export default class Input extends LitElement {
                 flex-grow: 1;
                 box-sizing: border-box;
 
+                min-width: 32px;
+
                 border: none;
                 outline: none;
                 background-color: transparent;
 
-                width: 100%;
-                height: 100%;
                 font-family: inherit;
                 font-weight: inherit;
             }
@@ -57,9 +57,7 @@ export default class Input extends LitElement {
                 font-weight: 400;
             }
 			ui-icon[icon="close"] {
-                flex-grow: 0;
-                flex-shrink: 0;
-				color: #616161;
+                color: #616161;
 			}
         `;
     }

@@ -15,12 +15,11 @@ export default class InputCombobox extends Input {
                 :host {
                     background-color: #f0f0f0;
                     color: #111;
+                    grid-template-columns: 1fr 24px 24px;
                 }
 				ui-icon[icon="expand-less"],
 				ui-icon[icon="expand-more"] {
                     color: #616161;
-                    flex-grow: 0;
-                    flex-shrink: 0;
 				}
             `
         ];

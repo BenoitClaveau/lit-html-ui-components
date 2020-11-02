@@ -1,6 +1,6 @@
 {
   "name": "lit-html-ui-components",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "UI components for React Native",
   "main": "index.js",
   "repository": {
