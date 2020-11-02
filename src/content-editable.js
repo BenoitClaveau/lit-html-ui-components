@@ -4,21 +4,25 @@ export default class ContentEditable extends LitElement {
 
     static get styles() {
         return css`
+            :host > div {
+                min-height: 20px;
+            }
         `;
     }
 
     static get properties() {
         return {
-            value: String,
+            value: String
         }
     }
 
     constructor() {
         super();
-        this.setAttribute("contenteditable", true);
         this.setAttribute("tabindex", 1);
+        this.setAttribute("contenteditable", true);
         this.addEventListener("keypress", e => this.keypressHandler(e));
         this.addEventListener("keyup", e => this.keyupHandler(e));
+        this.addEventListener("focus", e => this.focusHandler(e));
     }
 
     createRenderRoot() {
@@ -73,7 +77,7 @@ export default class ContentEditable extends LitElement {
     }
 
     render() {
-        return html`${this.value}`;
+        return html`${this.value}<br />`;
     }
 
     keypressHandler(e) {
@@ -109,4 +113,8 @@ export default class ContentEditable extends LitElement {
             }));
         }
     };
+    
+	focusHandler(e) {
+        requestAnimationFrame(() => document.execCommand('selectAll'));
+    }
 }
