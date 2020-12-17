@@ -14,6 +14,7 @@ export default class Checkbox extends LitElement {
     static get properties() {
         return {
             checked: Boolean,
+            disabled: Boolean
         }
     }
 
@@ -21,9 +22,14 @@ export default class Checkbox extends LitElement {
         return this.checked == "" || this.checked == true;
     }
 
+    get isDisabled() {
+        return this.disabled == "" || this.disabled == true;
+    }
+
     render() {
         const {
             isChecked,
+            isDisabled
         } = this;
 
         return html`
@@ -31,6 +37,7 @@ export default class Checkbox extends LitElement {
                 <input 
                     type="checkbox"
                     .checked="${live(isChecked)}"
+                    .disabled="${isDisabled}"
                     @change=${e => this.changeHandler(e)}
                 >
                 ${ this.renderLabel() }
