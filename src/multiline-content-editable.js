@@ -1,5 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 
+/**
+ * Cellule contenant plusieurs elememts editables pour gérer des listes
+ */
 export default class MultilineContentEditable extends LitElement {
 
     static get styles() {
@@ -19,8 +22,6 @@ export default class MultilineContentEditable extends LitElement {
 
     constructor() {
         super();
-        this.focusIndex = null;
-        this.setCaretToEnd = false;
         this.addEventListener("submit", e => this.submitHandler(e))
         this.addEventListener("reset", e => this.resetHandler(e))
         this.addEventListener("input", e => this.inputHandler(e))
@@ -30,32 +31,20 @@ export default class MultilineContentEditable extends LitElement {
         return html`${this.values.map((item, i) => this.renderItem(item, i))}`
     }
 
-    updated(changedProperties) {
-        if (this.focusIndex !== null) {
-            const elems = [...this.shadowRoot.children];
-            const elem = elems[this.focusIndex];
-            elem.focus({ setCaretToEnd: this.setCaretToEnd });
-            this.focusIndex = null;
-            this.setCaretToEnd = null;
-        }
-    }
-
     renderItem(item, index) {
         throw new Error("Not implemented!");
     }
 
-    submitHandler(e) {
+    /**
+     * Je demande à ajouter un nouvel enfant (editable) lors d'un 
+     */
+    async submitHandler(e) {
         const path = e.path || (e.composedPath && e.composedPath());
         if (path[0] === this) return; // Emit par moi-même.
-
         const i = path.indexOf(this);
         const child = path[i-2]; // -2 à cause du shadowRoot (shadowRoot + child = 2)
-
         const index = [...this.shadowRoot.children].indexOf(child);
         const item = this.values[index];
-
-        this.focusIndex = index + 1;
-
         this.dispatchEvent(new CustomEvent('add', {
             bubbles: true,
             composed: true,
@@ -64,22 +53,22 @@ export default class MultilineContentEditable extends LitElement {
                 item
              }
         }));
+
+        // Je donne le focus au bloc du dessous. Il a du être créé.
+        await this.updateComplete;
+        const elems = [...this.shadowRoot.children];
+        const elem = elems[index + 1];
+        if (!elem) return;
+        await elem.focus();
     }
 
-    resetHandler(e) {
+    async resetHandler(e) {
         const path = e.path || (e.composedPath && e.composedPath());
         if (path[0] === this) return; // Emit par moi-même.
-
         const i = path.indexOf(this);
         const child = path[i-2]; // -2 à cause du shadowRoot (shadowRoot + child = 2)
-
-        
         const index = [...this.shadowRoot.children].indexOf(child);
         const item = this.values[index];
-
-        this.focusIndex = index - 1;
-        this.setCaretToEnd = true;
-
         this.dispatchEvent(new CustomEvent('remove', {
             bubbles: true,
             composed: true,
@@ -88,8 +77,20 @@ export default class MultilineContentEditable extends LitElement {
                 item
              }
         }));
+
+        // Je donne le focus au bloc précedent etje met le curseur à la fin de la ligne. 
+        await this.updateComplete;
+        const elems = [...this.shadowRoot.children];
+        const elem = elems[index - 1];
+        if (!elem) return;
+        await elem.focus();
+        console.log("set caret to end")
+        await elem.setCaretToEnd();
     }
 
+    /**
+     * Le text a été changé
+     */
     inputHandler(e) {
         const index = [...this.children].indexOf(e.target);
         const item = this.values[index];

@@ -35,6 +35,19 @@ export default class Modal extends LitElement {
         this.opened = false;
     }
 
+    open() {
+        return new Promise((resolve) => {
+            this.resolve = resolve;
+            this.opened = true;
+        });
+    }
+
+    close(data) {
+        this.open = false;
+        if (this.resolve) this.resolve(data);
+        this.resolve = null;
+    }
+
     resize() {
         if (!this.dialog) return;
         this.dialog.notifyResize();
