@@ -32,6 +32,14 @@ export default class Autocomplete extends Combobox {
         this.debounceFetch(e);
     }
 
+    /**
+     * surcharge de clear pour appeler fecth via un debounce
+     */
+    clearHandler(e) {
+        super.clearHandler(e);
+        this.debounceFetch(e);
+    }
+
     fetch() {
         /** 
          * items

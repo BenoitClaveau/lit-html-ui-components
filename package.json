@@ -26,6 +26,9 @@
     "lit-html": "latest"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "web-dev-server --app-index demo/index.html --node-resolve --open --watch"
+  },
+  "devDependencies": {
+    "@web/dev-server": "^0.1.5"
   }
 }

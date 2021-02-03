@@ -9,23 +9,6 @@ export default class Button extends LitElement {
         return css`
             :host {
                 position: relative;
-
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-
-                flex-shrink: 0;
-
-                border: none;
-                outline: none;
-                text-decoration: none;
-
-                box-sizing: border-box;
-                overflow: hidden;
-
-                font-size: inherit;
-                font-weight: inherit;
             }
             #button {
                 flex: 1 0 auto;
@@ -46,10 +29,10 @@ export default class Button extends LitElement {
 
                 cursor: pointer;
 
-                display: var(--display, inherit);
-                flex-direction: var(--flex-direction, inherit);
-                align-items: var(--align-items, inherit);
-                justify-content: var(--justify-content, inherit);
+                display: var(--display, flex);
+                flex-direction: var(--flex-direction, row);
+                align-items: var(--align-items, center);
+                justify-content: var(--justify-content, center);
 
                 padding: var(--padding);
                 padding-left: var(--padding-left);

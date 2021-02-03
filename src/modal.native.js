@@ -55,7 +55,7 @@ export default class Modal extends LitElement {
                 <footer>
                     ${ this.renderFooter && this.renderFooter()}
                 </footer>
-            </paper>
+            </dialog>
         `;
     }
 

@@ -2,6 +2,9 @@ import { LitElement, html, css } from "lit-element";
 import "@polymer/paper-dialog/paper-dialog.js";
 import "@polymer/paper-dialog-scrollable/paper-dialog-scrollable.js";
 
+/**
+ * TODO remove paper-dialog
+ */
 export default class Modal extends LitElement {
 
     static get styles() {
@@ -35,6 +38,9 @@ export default class Modal extends LitElement {
         this.opened = false;
     }
 
+    /**
+     * Open dialog and returns a promise that will be resolved when the modal is closed.
+     */
     open() {
         return new Promise((resolve) => {
             this.resolve = resolve;

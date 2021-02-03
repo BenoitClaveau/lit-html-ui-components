@@ -40,6 +40,21 @@ export default class Combobox extends Dropdownable {
         this.addEventListener('clear', e => this.clearHandler(e));
     }
 
+    // la valeur dans la propriété data correspond au champ valeur dans items.
+    // inputValue doit correspondre au label.
+    // je rechercher le bon label dans les items.
+    shouldUpdate(changedProperties) {
+        const res = super.shouldUpdate(changedProperties);
+
+        // cas si value n'a pas changé mais null, mais items alors il faut
+        // initialiser inputValue car items peut avoir un element qui match avec la valeur null
+        // ex { label: "aucun", value: null }
+        if (changedProperties.has("items") && !this.value) { 
+            this.initInputValue();
+        }
+        return res;
+    }
+
     /**
      * Le texte dans l'input à changé je modifie inputValue uniquement (traitement interne).
      */
@@ -54,7 +69,22 @@ export default class Combobox extends Dropdownable {
      * séléctionner s'il faut un élement.  
      */
     submitHandler(e) {
+        const { value } = e.detail;
+        
         this.dropdown = false;
+        
+        // je prend le premier dont le label match.
+        const item = this.items.find(e => this.getInputValue(e) === value);
+        if (item) {
+            this.dispatchEvent(new CustomEvent("select", {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    item,
+                    index: this.items.indexOf(item)
+                }
+            }));
+        }
     }
 
     clearHandler(e) {
