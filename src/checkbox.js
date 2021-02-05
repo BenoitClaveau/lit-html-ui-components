@@ -5,8 +5,12 @@ export default class Checkbox extends LitElement {
 
     static get styles() {
         return css`
-            label {
-                display: flex;
+            host: {
+                display: inline-flex;
+            }
+            slot {
+                font-size: inherit;
+                font-weight: inherit;
             }
         `;
     }

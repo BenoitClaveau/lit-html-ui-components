@@ -6,7 +6,7 @@ customElements.define('ui-button', class extends Button {
         return [
             super.styles,
             css`
-                :host {
+                #button {
                     min-height: 36px;
                     background-color: #f0f0f0;
                     color: #000;
@@ -14,8 +14,8 @@ customElements.define('ui-button', class extends Button {
                     font-family: Roboto;
                     font-weight: 500;
                     font-size: 16px;
-                    --padding-left: 16px;
-                    --padding-right: 16px;
+                    padding-left: 16px;
+                    padding-right: 16px;
                 }
             `
         ];

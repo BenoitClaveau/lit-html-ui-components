@@ -7,38 +7,13 @@ export default class Button extends LitElement {
 
     static get styles() {
         return css`
-            :host {
-                position: relative;
-            }
             #button {
-                flex: 1 0 auto;
-                
+                display: inline-flex;
+                align-items: center;
+
+                position: relative;
+                overflow: hidden;
                 border: none;
-                
-                min-height: inherit;
-                height: inherit;
-                max-height: inherit;
-                min-width: inherit;
-                width: inherit;
-                max-width: inherit;
-                border-radius: inherit;
-                outline: inherit;
-
-                background: inherit;
-                color: inherit;
-
-                cursor: pointer;
-
-                display: var(--display, flex);
-                flex-direction: var(--flex-direction, row);
-                align-items: var(--align-items, center);
-                justify-content: var(--justify-content, center);
-
-                padding: var(--padding);
-                padding-left: var(--padding-left);
-                padding-right: var(--padding-right);
-                padding-top: var(--padding-top);
-                padding-bottom: var(--padding-bottom);
             }
             slot {
                 font-size: inherit;
@@ -99,6 +74,7 @@ export default class Button extends LitElement {
         const d = Math.max(this.button.clientWidth, this.button.clientHeight);
         circle.style.width = circle.style.height = d + "px";
         const rect = this.button.getBoundingClientRect();
+        console.log(rect)
         circle.style.left = e.clientX - rect.left - d / 2 + "px";
         circle.style.top = e.clientY - rect.top - d / 2 + "px";
         circle.classList.add("ripple");
