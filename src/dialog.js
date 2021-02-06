@@ -34,9 +34,7 @@ export default class Dialog extends Modal {
             ${this.renderTitle()}
             <touchable-highlight
                 @click="${e => {
-                    console.log("on click")
-                    this.open = false;
-                    this.requestUpdate();
+                    this.close({});
                 }}"
             >${svgClose()}</touchable-highlight>
         `;

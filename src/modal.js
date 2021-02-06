@@ -31,9 +31,10 @@ export default class Modal extends LitElement {
     }
 
     render() {
+        console.log("RENDER DIALOG")
         if (this.open === "") this.open = true;
         return html`
-            <dialog>
+            <dialog .open=${this.open}>
                 ${ this.renderContent() }
             </dialog>
         `;
@@ -44,25 +45,15 @@ export default class Modal extends LitElement {
         dialogPolyfill.registerDialog(this.dialog);
     }
 
-    updated(changedProps) {
-        if (changedProps.has("opened")) {
-            this.onVisibleChanged(this.opened, changedProps.get("opened"));
-        }
-    }
-
-    onVisibleChanged(newValue, oldValue) {
-        newValue ? this.dialog.showModal() : this.dialog.close();
-    }
-
-    show() {
+    showModal() {
         return new Promise((resolve) => {
             this.resolve = resolve;
-            this.opened = true;
+            this.dialog.showModal();
         });
     }
 
-    hide(data) {
-        this.open = false;
+    close(data) {
+        this.dialog.close();
         if (this.resolve) this.resolve(data);
         this.resolve = null;
     }

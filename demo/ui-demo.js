@@ -12,6 +12,7 @@ import {
     useEffect,
     component
 } from 'haunted';
+import { commitSymbol } from "haunted/lib/symbols";
 
 customElements.define("ui-dialog", class extends Dialog {
     static get styles() {
@@ -28,7 +29,7 @@ customElements.define("ui-dialog", class extends Dialog {
     }
 })
 
-customElements.define("ui-demo", component(() => {
+customElements.define("ui-demo", component(function() {
 
     const [count, setCount] = useState(0);
     const [text, setText] = useState("");
@@ -71,6 +72,12 @@ customElements.define("ui-demo", component(() => {
                 @clear=${e => setText("")}
             ></ui-input-field>
             <div></div>
+
+            <ui-button
+                @click=${e => {
+                    this.shadowRoot.querySelector("ui-dialog").showModal();
+                }}
+            >SHOW MODAL</ui-button>
             
             <ui-dialog
                 .open=${count > 0 ? 0 : count}
