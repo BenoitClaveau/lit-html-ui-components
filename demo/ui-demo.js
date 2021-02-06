@@ -5,42 +5,77 @@ import "../ui-readonly-field.js";
 import "../ui-input-field.js";
 import "../ui-input-date.js";
 import { close as svgClose } from "../src/icons";
+import Dialog from "../src/dialog.js";
 
-customElements.define("ui-demo", class extends LitElement {
-    
+import {
+    useState,
+    useEffect,
+    component
+} from 'haunted';
+
+customElements.define("ui-dialog", class extends Dialog {
     static get styles() {
-        return css`
+        return [
+            super.styles,
+            css``
+        ]
+    }
+    renderTitle() {
+        return html`<h1>TITLE</h1>`
+    }
+    renderBody() {
+        return html`<p>Message</p>`
+    }
+})
+
+customElements.define("ui-demo", component(() => {
+
+    const [count, setCount] = useState(0);
+    const [text, setText] = useState("");
+
+    return html`
+        <style>
             .grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
                 grid-gap: 16px;
             }
-        `;
-    }
+        </style>
+        <div class="grid">
+            <ui-button
+                @click=${e => setCount(count + 1)}
+            >BUTTON ${count}</ui-button>
+            <ui-button
+                @click=${e => setCount(count - 1)}
+            >BUTTON ${svgClose()} ${count}</ui-button>
+            <ui-checkbox>CHECKBOX</ui-checkbox>
 
-    render() {
-        return html`
-            <div class="grid">
-                <ui-button>BUTTON</ui-button>
-                <ui-button>BUTTON ${svgClose()}</ui-button>
-                <ui-checkbox>CHECKBOX</ui-checkbox>
-                <ui-readonly-field
-                    placeholder="placeholder"
-                    label="label"
-                    value="value"
-                ></ui-readonly-field>
-                <ui-input-field
-                    placeholder="placeholder"
-                    label="label"
-                    value="value"
-                ></ui-input-field>
+            <ui-input 
+                placeholder="placeholder"  
+                .value=${text}
+                @change=${e => setText(e.detail.value)}
+                @clear=${e => setText("")}
+            ></ui-input>
+            <ui-input-date 
+                placeholder="placeholder" 
+                .value=${new Date(Date.now())}
+            ></ui-input-date>
+            <div></div>
 
-                <ui-input-date
-                    placeholder="placeholder"
-                    label="label"
-                    value="value"
-                ></ui-input-date>
-            </div>
-        `;
-    }
-});
+            <ui-readonly-field label="label (readonly)" .value=${text}></ui-readonly-field>
+            <ui-input-field 
+                placeholder="placeholder" 
+                label="label" 
+                .value=${text}
+                @change=${e => setText(e.detail.value)}
+                @clear=${e => setText("")}
+            ></ui-input-field>
+            <div></div>
+            
+            <ui-dialog
+                .open=${count > 0 ? 0 : count}
+            ></ui-dialog>
+
+        </div>
+    `;
+}));

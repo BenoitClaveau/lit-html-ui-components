@@ -16,7 +16,8 @@ export default class Field extends LitElement {
                     color: var(--accent-color);
                 }
                 .value {
-                    min-height: 1.4em;
+                    line-height: 34px;
+                    min-height: 34px;
                     border-bottom: 2px solid #e8e6e6;
                 }
             `

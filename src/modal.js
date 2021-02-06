@@ -1,92 +1,47 @@
 import { LitElement, html, css } from "lit-element";
-import "@polymer/paper-dialog/paper-dialog.js";
-import "@polymer/paper-dialog-scrollable/paper-dialog-scrollable.js";
+// https://github.com/GoogleChrome/dialog-polyfill
+import dialogPolyfill from "dialog-polyfill";
 
-/**
- * TODO remove paper-dialog
- */
 export default class Modal extends LitElement {
 
     static get styles() {
         return css`
-            :host {
-                background-color: white;
+            dialog {
+                border: none;
+                border-radius: 4px;
+                box-shadow: 0 0 40px rgba(0,0,0,0.1), 0 0 10px rgba(0,0,0,0.25);
             }
-            header {
-                display: flex;
-                justify-content: flex-end;
+            dialog::backdrop { /* native */
+                background: rgba(0,0,0,.7);
             }
-            footer {
-                display: flex;
-                justify-content: flex-end;
-            }
-            footer > * {
-                margin-left: 16px;
-                margin-right: 16px;
+            dialog + .backdrop { /* polyfill */
+                background: rgba(0,0,0,.7);
             }
         `;
     }
 
     static get properties() {
         return {
-            opened: Boolean
+            open: Boolean
         }
     }
 
-    constructor() {
-        super();
-        this.opened = false;
-    }
-
-    /**
-     * Open dialog and returns a promise that will be resolved when the modal is closed.
-     */
-    open() {
-        return new Promise((resolve) => {
-            this.resolve = resolve;
-            this.opened = true;
-        });
-    }
-
-    close(data) {
-        this.open = false;
-        if (this.resolve) this.resolve(data);
-        this.resolve = null;
-    }
-
-    resize() {
-        if (!this.dialog) return;
-        this.dialog.notifyResize();
+    renderContent() {
+        return null;
     }
 
     render() {
-        if (!this.renderBody) throw new Error("renderBody is not defined.");
+        if (this.open === "") this.open = true;
         return html`
-            <paper-dialog 
-                id="dialog"
-                modal
-                @iron-overlay-opened="${this.patchOverlay}"
-                @iron-overlay-closed="${this.closeHandler}"
-            >${this.renderContent()}</paper-dialog>
-        `;
-    }
-
-    renderContent() {
-        return html`
-	        <header>
-	            ${ this.renderHeader && this.renderHeader()}
-	        </header>
-	        <paper-dialog-scrollable>
-	            <div style="margin-bottom: 2px;">${this.renderBody()}</div>
-	        </paper-dialog-scrollable>
-	        <footer>
-	            ${ this.renderFooter && this.renderFooter()}
-	        </footer>
+            <dialog>
+                ${ this.renderContent() }
+            </dialog>
         `;
     }
 
     firstUpdated() {
-        this.dialog = this.shadowRoot.querySelector("#dialog");
+        this.dialog = this.shadowRoot.querySelector("dialog");
+        dialogPolyfill.registerDialog(this.dialog);
     }
 
     updated(changedProps) {
@@ -96,28 +51,19 @@ export default class Modal extends LitElement {
     }
 
     onVisibleChanged(newValue, oldValue) {
-        newValue ? this.dialog.open() : this.dialog.close();
+        newValue ? this.dialog.showModal() : this.dialog.close();
     }
 
-    closeHandler(e) {
-        // j'arrete la propagation dans s'il y a plusieurs dialog ouverte.
-        // et comme l'evenement close est stoppé. Je supprime moi meme le backDrop.
-        e.stopPropagation();
-        this.backdropElement.remove();
-        this.dispatchEvent(new CustomEvent("close", {
-            bubbles: true,
-            composed: true,
-            detail: e.detail
-        }));
-    };
+    show() {
+        return new Promise((resolve) => {
+            this.resolve = resolve;
+            this.opened = true;
+        });
+    }
 
-    /**
-     * bug fix iron-overlay, sometime the overlay is showing over the dialog.
-     */
-    patchOverlay(e) {
-        if (e.target.withBackdrop) {
-            this.backdropElement = e.target.backdropElement;
-            e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
-        }
+    hide(data) {
+        this.open = false;
+        if (this.resolve) this.resolve(data);
+        this.resolve = null;
     }
 }

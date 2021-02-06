@@ -10,10 +10,10 @@ export default class Button extends LitElement {
             #button {
                 display: inline-flex;
                 align-items: center;
-
                 position: relative;
                 overflow: hidden;
                 border: none;
+                padding: 0;
             }
             slot {
                 font-size: inherit;
