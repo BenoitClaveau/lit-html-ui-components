@@ -11,9 +11,6 @@ customElements.define('ui-button', class extends Button {
                     background-color: #f0f0f0;
                     color: #000;
                     border-radius: 4px;
-                    font-family: Roboto;
-                    font-weight: 500;
-                    font-size: 16px;
                     padding-left: 16px;
                     padding-right: 16px;
                 }

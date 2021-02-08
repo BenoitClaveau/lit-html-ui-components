@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import "../touchable-highlight.js";
 
 export default class Dropdown extends LitElement {
 
@@ -8,23 +9,29 @@ export default class Dropdown extends LitElement {
                 position: fixed;
                 z-index: 99;
                 overflow: hidden;
+
+                display: grid;
+                grid-template-columns: 1fr;
+                
                 margin-top: 4px;
                 border-radius: 4px;
                 max-height: 400px;
                 overflow: auto;
-                min-width: 204px;
+                min-width: 200px;
 
                 background-color: #f0f0f0;
                 color: #111;
+                
                 font-family: Roboto;
                 font-size: 16px;
                 font-weight: 500;
             }
-            :host > * {
-                padding: 6px 8px;
-                cursor: pointer;
+            :host > touchable-highlight {
+                --justify-content: start;
+                --padding: 6px 8px;
+            }
+            touchable-highlight:not(:last-of-type) {
                 border-bottom: 1px solid #d4d4d4;
-                min-height: 24px;
             }
         `;
     }
@@ -46,11 +53,9 @@ export default class Dropdown extends LitElement {
 
         return items.map((item, index) => {
             return html`
-                <div
-                    @click="${e => this.onSelect(e, item, index)}"
-                >
-                    ${this.renderItem(item, index, index === activeIndex)}
-                </div>
+                <touchable-highlight 
+                    @click=${e => this.onSelect(e, item, index)}
+                >${this.renderItem(item, index, index === activeIndex)}</touchable-highlight>
             `;
         })
     }

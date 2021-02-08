@@ -1,10 +1,12 @@
 import { LitElement, html, css } from 'lit-element';
-import "./iconset.js";
-import "../ui-icon.js";
 import Input from './input.js';
+import {
+    expandLess as svgExpandLess,
+    expandMore as svgExpandMore
+} from "./icons";
 
 /**
- * Input + ui-icon dropdown
+ * Input + icon dropdown
  */
 export default class InputCombobox extends Input {
 
@@ -13,14 +15,8 @@ export default class InputCombobox extends Input {
             super.styles,
             css`
                 :host {
-                    background-color: #f0f0f0;
-                    color: #111;
                     grid-template-columns: 1fr 24px 24px;
                 }
-				ui-icon[icon="expand-less"],
-				ui-icon[icon="expand-more"] {
-                    color: #616161;
-				}
             `
         ];
     }
@@ -32,45 +28,25 @@ export default class InputCombobox extends Input {
         }
     }
 
-    constructor() {
-        super();
-        this.outsideHandler = (e) => this._outsideClickHandler(e);
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        window.addEventListener('mousedown', this.outsideHandler);
-        this.addEventListener('keydown', e => this.keydownHandler(e));   
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        window.removeEventListener('mousedown', this.outsideHandler);
-    }
-
-    _outsideClickHandler(e) {
-        const path = e.path || (e.composedPath && e.composedPath());
-        const inside = path.some(e => e == this);
-        if (inside && this.dropdown) {
-            this.toggle();
-        }
-    }
-
     render() {
         return html`
-            ${ this.renderInput() }
-            ${ this.renderClearButton() }
-            ${ this.renderDropdownButton() }
+            ${this.renderInput()}
+            ${this.renderClearButton()}
+            ${this.renderDropdownButton()}
         `;
     }
 
     renderDropdownButton() {
+        if (this.dropdown)
+            return html`
+                <touchable-highlight 
+                    @click=${e => this.toggle(e)}
+                >${svgExpandLess()}</touchable-highlight>`;
+
         return html`
-            <ui-icon
-                icon="${this.dropdown ? "expand-less" : "expand-more"}"
-                @click="${e => this.toggle(e)}"
-            ></ui-icon>
-        `;
+            <touchable-highlight 
+                @click=${e => this.toggle(e)}
+            >${svgExpandMore()}</touchable-highlight>`;
     }
 
     toggle(e) {
@@ -81,15 +57,5 @@ export default class InputCombobox extends Input {
             detail: null
         }));
     };
-
-    keydownHandler(e) {
-        if (e.key == "Escape" && this.dropdown) {
-            this.dispatchEvent(new CustomEvent("close", {
-                bubbles: true,
-                composed: true,
-                detail: null
-            }));
-        }
-    }
 }
 

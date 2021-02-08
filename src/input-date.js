@@ -2,9 +2,31 @@ import { LitElement, html, css } from 'lit-element';
 import Input from './input.js';
 
 /**
- * Input + ui-icon dropdown
+ * Input + icon dropdown
  */
 export default class InputDate extends Input {
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+            :host {
+                grid-template-columns: 1fr;
+            }
+            input::-webkit-calendar-picker-indicator { 
+              color: #777; 
+            }
+            input::-webkit-clear-button { 
+                font-size: 18px;
+                fill: #777; 
+            } 
+            input::-webkit-inner-spin-button { 
+                margin-top: 6px; 
+                color: #777; 
+            }
+        `
+    ];
+  }
 
   constructor() {
     super();
@@ -33,10 +55,10 @@ export default class InputDate extends Input {
       this.dispatchEvent(new CustomEvent("change", {
         bubbles: true,
         composed: true,
-        detail: { 
+        detail: {
           value
         }
-    }));
+      }));
     }
   }
 }

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import { live } from "lit-html/directives/live.js";
-import "../ui-icon.js";
+import { close as svgClose } from "./icons";
 /**
  * events:
  * - change (value: text)
@@ -19,26 +19,22 @@ export default class Input extends LitElement {
                 display: grid;
                 grid-template-columns: 1fr 24px;
                 grid-template-rows: 36px;
-                outline: none;
+                
+                align-items: center;
 
                 border-radius: 4px;
                 -moz-outline-radius: 4px;
 
-                background-color: white;
+                background-color: #f0f0f0;
                 color: #111;
-                
+
                 font-family: Roboto;
                 font-weight: 500;
                 font-size: 16px;
+                
             }
             :host(:host:focus-within) {
                 outline: 1px solid var(--accent-color);
-            }
-            *:first-child {
-                margin-left: 8px;
-            }
-            *:last-child {
-                margin-right: 8px;
             }
             input {
                 flex-grow: 1;
@@ -49,16 +45,10 @@ export default class Input extends LitElement {
                 border: none;
                 outline: none;
                 background-color: transparent;
-
-                font-family: inherit;
-                font-weight: inherit;
             }
             input::placeholder {
                 font-weight: 400;
             }
-			ui-icon[icon="close"] {
-                color: #616161;
-			}
         `;
     }
 
@@ -115,11 +105,9 @@ export default class Input extends LitElement {
 
     renderClearButton() {
         return html`
-            <ui-icon
-                icon="close"
-                @click="${e => this.clear()}"
-            ></ui-icon>
-        `;
+            <touchable-highlight 
+                @click=${e => this.clear(e)}
+            >${svgClose()}</touchable-highlight>`;
     }
 
     keypressHandler(e) {
@@ -152,7 +140,7 @@ export default class Input extends LitElement {
         }
     };
 
-    clear() {
+    clear(e) {
         this.dispatchEvent(new CustomEvent('clear', {
             bubbles: true,
             composed: true,

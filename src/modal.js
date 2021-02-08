@@ -13,25 +13,40 @@ export default class Modal extends LitElement {
             }
             dialog::backdrop { /* native */
                 background: rgba(0,0,0,.7);
+                width: 100vw;
+                height: 100vw;
+                position: fixed;
+                top: 0;
+                left: 0;
             }
             dialog + .backdrop { /* polyfill */
                 background: rgba(0,0,0,.7);
+                width: 100vw;
+                height: 100vw;
+                position: fixed;
+                top: 0;
+                left: 0;
             }
         `;
     }
 
+    /**
+     * Open dialog (without backdrop)
+     */
     static get properties() {
         return {
             open: Boolean
         }
     }
 
+    /**
+     * Must be overridden
+     */
     renderContent() {
         return null;
     }
 
     render() {
-        console.log("RENDER DIALOG")
         if (this.open === "") this.open = true;
         return html`
             <dialog .open=${this.open}>
@@ -41,10 +56,14 @@ export default class Modal extends LitElement {
     }
 
     firstUpdated() {
+        /** polyfill */
         this.dialog = this.shadowRoot.querySelector("dialog");
         dialogPolyfill.registerDialog(this.dialog);
     }
 
+    /**
+     * Open dialog with backdrop
+     */
     showModal() {
         return new Promise((resolve) => {
             this.resolve = resolve;

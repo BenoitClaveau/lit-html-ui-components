@@ -11,16 +11,18 @@ export default class Dialog extends Modal {
             super.styles,
             css`
                 header {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: space-around;
+                    display: grid;
+                    grid-template-columns: 1fr 24px;
+                    grid-column-gap: 36px;
+                    align-items: start;
+                }
+                header > * {
+                    margin-top: 0;
                 }
                 section {
                     flex-grow: 1;
                 }
                 footer {
-                    display: flex;
-                    justify-content: space-around;
                 }
             `];
     }

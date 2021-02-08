@@ -7,10 +7,10 @@ export default class Checkbox extends LitElement {
         return css`
             host: {
                 display: inline-flex;
-            }
-            slot {
-                font-size: inherit;
-                font-weight: inherit;
+
+                font-family: Roboto;
+                font-weight: 500;
+                font-size: 16px;
             }
         `;
     }

@@ -24,20 +24,18 @@ export default class Combobox extends Dropdownable {
         return {
             ...super.properties,
             items: Array,
-            placeholder: String,
+            value: Object,
             inputValue: String, // text bindé dans l'input c'est une copie interne de value 
         }
     }
 
     constructor() {
         super();
-        this.items = [];
-        this.clickHandler = (e) => this._clickHandler(e);
-        this.resizeHandler = (e) => this._resizeHandler(e);
-
         this.addEventListener('change', e => this.changeHandler(e));
         this.addEventListener('submit', e => this.submitHandler(e));
         this.addEventListener('clear', e => this.clearHandler(e));
+        this.addEventListener('focus', e => this.focusHandler(e));
+        this.addEventListener('click', e => this.clickHandler(e));
     }
 
     // la valeur dans la propriété data correspond au champ valeur dans items.
@@ -49,10 +47,15 @@ export default class Combobox extends Dropdownable {
         // cas si value n'a pas changé mais null, mais items alors il faut
         // initialiser inputValue car items peut avoir un element qui match avec la valeur null
         // ex { label: "aucun", value: null }
-        if (changedProperties.has("items") && !this.value) { 
+        if (changedProperties.has("items") || changedProperties.has("value")) { 
             this.initInputValue();
         }
         return res;
+    }
+
+    dropdownSelectHandler(e) {
+        super.dropdownSelectHandler(e);
+        this.inputValue = this.getInputValue(e.detail.item);
     }
 
     /**
@@ -61,7 +64,21 @@ export default class Combobox extends Dropdownable {
     changeHandler(e) {
         e.stopPropagation();
         this.inputValue = e.detail.value; // je change uniquement l'affichage pas value qui correspond à la valeur séléctionné. 
-        this.dropdown = !!this.inputValue;
+        this.dropdown = true;
+    }
+
+    focusHandler(e) {
+        const path = e.path || (e.composedPath && e.composedPath());
+        if (path[0].tagName === "INPUT") {
+            this.dropdown = true;
+        }
+    }
+
+    clickHandler(e) {
+        const path = e.path || (e.composedPath && e.composedPath());
+        if (path[0].tagName === "INPUT") {
+            this.dropdown = true;
+        }
     }
 
     /**
@@ -74,8 +91,12 @@ export default class Combobox extends Dropdownable {
         this.dropdown = false;
         
         // je prend le premier dont le label match.
-        const item = this.items.find(e => this.getInputValue(e) === value);
+        let item = this.items.find(e => this.getInputValue(e) === value);
+        if (!item) {
+            item = this.items.filter(e => new RegExp(`^${value}`, "ig").test(this.getInputValue(e))).shift();
+        }
         if (item) {
+            this.inputValue = this.getInputValue(item);
             this.dispatchEvent(new CustomEvent("select", {
                 bubbles: true,
                 composed: true,
@@ -109,13 +130,6 @@ export default class Combobox extends Dropdownable {
     }
 
     /**
-     * Le composant principale doit être un input avec un value de type text. Je préfère renommer la fonction initComponent en initInputValue.
-     */
-    initComponent() {
-        return this.initInputValue();
-    }
-
-    /**
      * Retourne le texte à afficher dans l'input pour un item.
      */
     getInputValue(item) {
@@ -136,8 +150,7 @@ export default class Combobox extends Dropdownable {
      */
     renderInput() {
         /**
-         * placeholder,
-         * value
+         * inputValue
          */
         throw new Error("Not implemented!");
     }

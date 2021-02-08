@@ -1,7 +1,7 @@
 import { LitElement, html, css, svg } from 'lit-element';
 import "../touchable-highlight.js"
 
-export default class SvgCheckbox extends LitElement {
+export default class Toggle extends LitElement {
 
     static get properties() {
         return {

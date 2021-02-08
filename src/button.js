@@ -7,13 +7,24 @@ export default class Button extends LitElement {
 
     static get styles() {
         return css`
+            :host {
+                display: inherit;
+
+                font-family: Roboto;
+                font-weight: 500;
+                font-size: 16px;
+            }
             #button {
-                display: inline-flex;
-                align-items: center;
+                display: var(--display, inline-flex);
+                align-items: var(--align-items, center);
+                justify-content: var(--justify-content, center);
+                flex: 1;
+
                 position: relative;
                 overflow: hidden;
                 border: none;
-                padding: 0;
+                background-color: var(--background-color, transparent);
+                padding: var(--padding, 0);
             }
             slot {
                 font-size: inherit;
