@@ -21,11 +21,37 @@ import {
  * Extends Dialog to define body
  */
 customElements.define("ui-dialog", class extends Dialog {
+    static get styles() {
+        return [
+            super.styles,
+            css`
+                .grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    grid-gap: 32px;
+                    margin: 16px;
+                }
+            `];
+    }
     renderTitle() {
         return html`<h1>TITLE</h1>`
     }
     renderBody() {
-        return html`<p>Message</p>`
+        return html`
+        <div class="grid">
+            <ui-button @click=${e => this.close({ selected: "item 1"})}>item 1</ui-button>
+            <ui-button @click=${e => this.close({ selected: "item 2"})}>item 2</ui-button>
+            <ui-button @click=${e => this.close({ selected: "item 3"})}>item 3</ui-button>
+            <ui-button @click=${e => this.close({ selected: "item 4"})}>item 4</ui-button>
+            <ui-button @click=${e => this.close({ selected: "item 5"})}>item 5</ui-button>
+        </div>`
+    }
+    renderFooter() {
+        return html`
+            <ui-button
+                @click=${e => this.close({ cancel: true })}
+            >ANNULER</ui-button>
+        `
     }
 });
 
@@ -179,7 +205,9 @@ customElements.define("ui-demo", component(function() {
             <ui-button
                 @click=${async e => {
                     const res = await this.shadowRoot.querySelector("ui-dialog").showModal();
-                    console.log(res)
+                    if (res.selected) {
+                        alert(`You have selected: ${res.selected}`);
+                    }
                 }}
             >SHOW MODAL</ui-button>
             

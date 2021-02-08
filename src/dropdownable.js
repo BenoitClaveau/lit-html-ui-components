@@ -34,8 +34,8 @@ export default class Dropdownable extends LitElement {
         this.windowResizeHandler = (e) => this._windowResizeHandler(e);
         this.windowMousedownHandler = (e) => this._windowMousedownHandler(e);
 
-        this.addEventListener('open', e => this.openHandler(e));
-        this.addEventListener('close', e => this.closeHandler(e));
+        this.addEventListener('expand', e => this.expandHandler(e));
+        this.addEventListener('collapse', e => this.collapseHandler(e));
 
         this.addEventListener('keydown', e => this.keydownHandler(e));
 
@@ -76,11 +76,11 @@ export default class Dropdownable extends LitElement {
         }
     }
 
-    openHandler(e) {
+    expandHandler(e) {
         this.dropdown = true;
     }
 
-    closeHandler(e) {
+    collapseHandler(e) {
         e.stopPropagation();
         this.dropdown = false;
     }

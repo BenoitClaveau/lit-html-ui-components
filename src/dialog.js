@@ -19,10 +19,9 @@ export default class Dialog extends Modal {
                 header > * {
                     margin-top: 0;
                 }
-                section {
-                    flex-grow: 1;
-                }
                 footer {
+                    display: flex;
+                    justify-content: end;
                 }
             `];
     }
@@ -55,9 +54,7 @@ export default class Dialog extends Modal {
             <header>
                 ${ this.renderHeader()}
             </header>
-            <section>
-                ${ this.renderBody()}
-            </section>
+            ${ this.renderBody()}
             <footer>
                 ${ this.renderFooter()}
             </footer>

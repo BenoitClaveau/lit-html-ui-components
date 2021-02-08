@@ -51,7 +51,7 @@ export default class InputCombobox extends Input {
 
     toggle(e) {
         if (e) e.stopPropagation();
-        this.dispatchEvent(new CustomEvent(this.dropdown ? "close" : "open", {
+        this.dispatchEvent(new CustomEvent(this.dropdown ? "collapse" : "expand", {
             bubbles: true,
             composed: true,
             detail: null
