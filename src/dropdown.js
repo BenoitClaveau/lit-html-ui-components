@@ -60,10 +60,6 @@ export default class Dropdown extends LitElement {
         })
     }
 
-    renderItem(item, index, isActive) {
-        throw new Error("Not implemented!");
-    }
-
     onSelect(e, item, index) {
         this.dispatchEvent(new CustomEvent("select", {
             bubbles: true,

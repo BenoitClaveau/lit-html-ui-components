@@ -21,23 +21,7 @@ export default class Autocomplete extends Combobox {
 
     constructor() {
         super();
-        this.items = [];
         this.debounceFetch = debounce((...args) => this.fetch(...args), 250);
-    }
-
-    shouldUpdate(changedProperties) {
-        /**
-         * Do no call initInputValue see Combobox.shouldUpdate
-         */
-        if (changedProperties.has("items") && !changedProperties.has("value")) { 
-            return true;
-        }
-        const res = super.shouldUpdate(changedProperties);
-
-        if (changedProperties.has("value")) { 
-            this.initInputValue();
-        }
-        return res;
     }
 
     /**

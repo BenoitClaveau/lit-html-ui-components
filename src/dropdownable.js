@@ -36,9 +36,7 @@ export default class Dropdownable extends LitElement {
 
         this.addEventListener('expand', e => this.expandHandler(e));
         this.addEventListener('collapse', e => this.collapseHandler(e));
-
         this.addEventListener('keydown', e => this.keydownHandler(e));
-
         this.addEventListener('select', e => this.dropdownSelectHandler(e));
     }
 
@@ -81,7 +79,6 @@ export default class Dropdownable extends LitElement {
     }
 
     collapseHandler(e) {
-        e.stopPropagation();
         this.dropdown = false;
     }
 

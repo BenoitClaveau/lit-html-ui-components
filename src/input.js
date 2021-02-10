@@ -34,7 +34,7 @@ export default class Input extends LitElement {
                 
             }
             :host(:host:focus-within) {
-                outline: 1px solid var(--accent-color);
+                outline: 1px solid var(--accent-color, red);
             }
             input {
                 flex-grow: 1;
@@ -69,6 +69,18 @@ export default class Input extends LitElement {
     createRenderRoot() {
         // je délégue la gestion du focus à L'enfant.
         return this.attachShadow({ mode: "open", delegatesFocus: true });
+    }
+
+    async getInput() {
+        const div = this.shadowRoot.querySelector("input");
+        if (div) return div;
+        await this.updateComplete;
+        return this.shadowRoot.querySelector("input");
+    }
+
+    async focus() {
+        super.focus();
+        (await this.getInput()).focus();
     }
 
     render() {

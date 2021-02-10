@@ -16,12 +16,12 @@ export default class Tags extends Autocomplete {
         return [
             super.styles,
             css`
-                #tags-container {
+                #tags {
                     display: flex;
                     flex-direction: row;
                     flex-wrap: wrap;
                 }
-                #tags-container > * {
+                #tags > * {
                     margin: 4px 4px 4px 0px;
                 }
                 
@@ -41,6 +41,15 @@ export default class Tags extends Autocomplete {
         this.tags = [];
     }
 
+    initInputValue() {
+        this.inputValue = "";
+        this.debounceFetch(new CustomEvent("init", {
+            bubbles: true,
+            composed: true,
+            detail: { value: null }
+        }));
+    }
+
     render() {
         return html`
             ${ this.renderTags() }
@@ -48,28 +57,23 @@ export default class Tags extends Autocomplete {
         `;
     }
 
-    firstUpdated() {
-        super.firstUpdated();
-        const tags = this.shadowRoot.querySelector("#tags-container");
-        tags.addEventListener('remove', e => this.tagRemoveHandler(e));
-    }
-
-    tagRemoveHandler(e) {
-        e.stopPropagation();
-        this.opened = false;
+    remove(tag) {
         this.dispatchEvent(new CustomEvent("remove", {
             bubbles: true,
             composed: true,
-            detail: e.detail
+            detail: {
+                item: tag
+            }
         }));
     }
 
     renderTags() {
         if (!this.tags) return null;
         return html`
-            <div id="tags-container">
-                ${this.tags.map((e, i, arr) => this.renderTag(e, i, arr))}
-            </div>
+            <div 
+                clas="tags"
+                @remove=${e => this.opened = false}
+            >${this.tags.map((e, i, arr) => this.renderTag(e, i, arr))}</div>
         `
     }
 

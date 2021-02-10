@@ -5,7 +5,7 @@ import { LitElement, html, css } from 'lit-element';
  * caret is not visible on focus.
  */
 
- // FIREFOX ajoute un /n si vide.
+// FIREFOX ajoute un /n si vide.
 const sanitize = (str) => {
     if (!str) return null;
     return str.replace(/\r\n|\r|\n/g, "\n").replace(/^\n+$/g, "");
@@ -15,8 +15,26 @@ export default class ContentEditable extends LitElement {
 
     static get styles() {
         return css`
+            :host {
+                border-radius: 4px;
+                -moz-outline-radius: 4px;
+
+                background-color: #f0f0f0;
+                color: #111;
+
+                font-family: Roboto;
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 22px;
+
+                padding-top: 7px;
+                padding-bottom: 7px;
+            }
+            :host(:host:focus-within) {
+                outline: 1px solid var(--accent-color, red);
+            }
             :host > div {
-                min-height: 20px;
+                outline: none;
             }
         `;
     }
@@ -30,26 +48,24 @@ export default class ContentEditable extends LitElement {
     constructor() {
         super();
 
+        // this._onblur
+
         // FIREFOX HACK je recréé le composant pour éviter le bug du focus
         this._onblur = e => {
-            const { _onblur, _onkeypress, _onkeyup } = this;
-            const copy = e.target.cloneNode(true); // event handler are not clones
-            copy.onblur = _onblur;
-            copy.onkeypress = _onkeypress;
-            copy.onkeyup = _onkeyup;
-            e.target.parentNode.replaceChild(copy, e.target);
+            this.resetEditable(e.target);
         }
 
         // les handlers doivent être copiés dans onblur.Je les déclare comme fonction pour plus de facilté.
         this._onkeypress = e => {
             if (e.key == "Enter") {
-                // j'annule l'event car je ne veux pas plusieurs lignes
-                // cela sera géré par contenteditable
-                e.preventDefault();
+                // si j'appelle preventDefault j'annule le keypress
+                // pour ne pas avoir de cr
                 this.dispatchEvent(new CustomEvent('submit', {
                     bubbles: true,
                     composed: true,
-                    detail: {}
+                    detail: {
+                        preventDefault: () => e.preventDefault()
+                    }
                 }));
             }
         }
@@ -67,7 +83,6 @@ export default class ContentEditable extends LitElement {
             }
 
             if (!this.value && ["Backspace", "Delete"].some(p => e.key === p)) {
-                console.log("reset")
                 this.dispatchEvent(new CustomEvent('reset', {
                     bubbles: true,
                     composed: true,
@@ -75,7 +90,21 @@ export default class ContentEditable extends LitElement {
                 }));
             }
         };
-     }
+    }
+
+    resetEditable(target) {
+        const { _onblur, _onkeypress, _onkeyup } = this;
+        const copy = target.cloneNode(true); // event handler are not clones
+        copy.onblur = _onblur;
+        copy.onkeypress = _onkeypress;
+        copy.onkeyup = _onkeyup;
+        target.parentNode.replaceChild(copy, target);
+    }
+
+    createRenderRoot() {
+        // je délégue la gestion du focus à L'enfant.
+        return this.attachShadow({ mode: "open", delegatesFocus: true });
+    }
 
     // https://gist.github.com/islishude/6ccd1fbf42d1eaac667d6873e7b134f8
     async getCaretPos() {
@@ -105,7 +134,7 @@ export default class ContentEditable extends LitElement {
     }
 
     async getContentEditable() {
-        let div = this.shadowRoot.querySelector("[contenteditable=true]");
+        const div = this.shadowRoot.querySelector("[contenteditable=true]");
         if (div) return div;
         await this.updateComplete;
         return this.shadowRoot.querySelector("[contenteditable=true]");
@@ -131,20 +160,24 @@ export default class ContentEditable extends LitElement {
      */
     get localValue() {
         const div = this.shadowRoot.querySelector("[contenteditable=true]");
-        return !div ? 
-            null : 
+        return !div ?
+            null :
             div.innerText;
     }
 
     render() {
+        const div = this.shadowRoot.querySelector("[contenteditable=true]");
+        if (div) {
+            // reset iternal state of div.contenteditable="true"
+            resetEditable(div);
+        } 
         const { _onblur, _onkeypress, _onkeyup } = this;
         return html`
             <div 
                 contenteditable="true" 
-                @blur=${_onblur}
-                @keypress=${_onkeypress}
-                @keyup=${_onkeyup}
-            >${this.value}</div>
+                @blur=${_onblur} 
+                @keypress=${_onkeypress} 
+                @keyup=${_onkeyup}>${this.value}</div>
         `;
     }
 }

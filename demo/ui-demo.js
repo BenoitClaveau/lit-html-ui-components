@@ -4,12 +4,16 @@ import "../ui-checkbox.js";
 import "../ui-text.js";
 import "../ui-input.js";
 import "../ui-input-combobox.js";
+import "../ui-combobox-dropdown.js";
 import "../ui-input-date.js";
+import "../touchable-highlight.js";
+import "../ui-content-editable.js";
 import { close as svgClose } from "../src/icons";
 import Dialog from "../src/dialog.js";
 import Combobox from "../src/combobox.js";
-import Dropdown from "../src/dropdown.js";
 import Autocomplete from "../src/autocomplete.js";
+import Tags from "../src/tags.js";
+import MulilineContentEditable from "../src/multiline-content-editable.js";
 
 import {
     useState,
@@ -56,16 +60,6 @@ customElements.define("ui-dialog", class extends Dialog {
 });
 
 /**
- * Extends Dropdown to display items like you want
- * by default like a grid.
- */
-customElements.define("ui-dropdown", class extends Dropdown {
-    renderItem(item, index, isActive) {
-        return html`<div>${item.label} (${item.code})</div>`
-    }
-});
-
-/**
  * Adapt Combobox to your data
  */
 customElements.define("ui-combobox", class extends Combobox {
@@ -88,14 +82,12 @@ customElements.define("ui-combobox", class extends Combobox {
     }
 
     renderDropdown() {
-        /**
-         * Pass items
-         */
         return html`
-            <ui-dropdown
+            <ui-combobox-dropdown
                 .items=${this.items}
                 .dropdown="${this.dropdown}"
-            ></ui-dropdown>
+                .renderItem=${(item, index, isActive) => html`<div>${item.label} (${item.code})</div>`}
+            ></ui-combobox-dropdown>
         `
     }
 
@@ -107,12 +99,6 @@ customElements.define("ui-combobox", class extends Combobox {
                 .dropdown="${this.dropdown}"
             ></ui-input-combobox>
         `
-    }
-});
-
-customElements.define("ui-autocomplete-dropdown", class extends Dropdown {
-    renderItem(item, index, isActive) {
-        return html`<div>${item}</div>`
     }
 });
 
@@ -128,14 +114,12 @@ customElements.define("ui-autocomplete", class extends Autocomplete {
     }
 
     renderDropdown() {
-        /**
-         * Pass items
-         */
         return html`
-            <ui-autocomplete-dropdown
+            <ui-combobox-dropdown
                 .items=${this.items}
                 .dropdown="${this.dropdown}"
-            ></ui-autocomplete-dropdown>
+                .renderItem=${(item, index, isActive) => html`<div>${item}</div>`}
+            ></ui-combobox-dropdown>
         `
     }
 
@@ -152,13 +136,86 @@ customElements.define("ui-autocomplete", class extends Autocomplete {
         this.items = [`${this.inputValue} ok`, `${this.inputValue} nok`, `${this.inputValue} war`]
     }
 
-})
+});
+
+customElements.define("ui-tags", class extends Tags {
+
+    VALUES = [
+        "entrée",
+        "plat",
+        "garniture",
+        "laitage",
+        "dessert",
+        "goûter",
+        "crudités",
+        "salade composée",
+        "féculent",
+        "légumes",
+        "légumineux",
+        "potage",
+        "charcuterie",
+        "volaille"
+    ]
+
+    getInputValue(item) {
+        return item;
+    }
+
+    renderDropdown() {
+        return html`
+            <ui-combobox-dropdown
+                .items=${this.items}
+                .dropdown="${this.dropdown}"
+                .renderItem=${(item, index, isActive) => html`<div>${item}</div>`}
+            ></ui-combobox-dropdown>
+        `
+    }
+
+    renderInput() {
+        return html`
+            <ui-input-combobox
+                placeholder="Role"
+                .value="${this.inputValue}"
+                .dropdown="${this.dropdown}"
+            ></ui-input-combobox>
+        `
+    }
+    renderTag(e) {
+        return html`
+            <touchable-highlight 
+                style="display: inline-flex; --padding:4px ; margin: 0 8px 8px 0; background-color: burlywood; border-radius: 4px;"
+                @click="${() => this.remove(e)}"
+            >
+                ${e}
+                ${svgClose({ width: 14, height: 14 })}
+            </touchable-highlight>
+        `
+    }
+    
+    fetch(e) {
+        const { value } = e.detail;
+        this.items = value ? this.VALUES.filter(e => new RegExp(`^${value}`, "ig").test(e)): this.VALUES;
+    }
+});
+
+
+customElements.define('ui-multiline-content-editable', class extends MulilineContentEditable {
+    renderItem(item, index) {
+        return html`
+            <ui-content-editable
+                .value=${item}
+            ></ui-content-editable>
+        `;
+    }
+});
 
 customElements.define("ui-demo", component(function() {
 
     const [count, setCount] = useState(0);
     const [text, setText] = useState("");
     const [role, setRole] = useState();
+    const [tags, setTags] = useState([]);
+    const [message, setMessage] = useState("content editable");
 
     return html`
         <style>
@@ -217,13 +274,45 @@ customElements.define("ui-demo", component(function() {
 
             <ui-combobox
                 .value=${role?.label}
+                @clear=${() => setRole()}
                 @select=${e => setRole(e.detail.item)}
             ></ui-combobox>
 
             <ui-autocomplete
                 .value=${text}
+                @clear=${() => setText("")}
                 @select=${e => setText(e.detail.item)}
             ></ui-autocomplete>
+
+            <ui-tags
+                .value=${text}
+                .tags=${tags}
+                @clear=${() => setText("")}
+                @remove=${e => setTags(tags.filter(t => t !== e.detail.item))}
+                @select=${e => setTags([...new Set(tags).add(e.detail.item)])}
+                @submit=${e => setTags([...new Set(tags).add(e.detail.item)])}
+            ></ui-tags>
+
+            
+            <ui-content-editable
+                .value=${message}
+                @change=${e => setMessage(e.detail.value)}
+            ></ui-content-editable>
+
+            <div style="border: 1px dotted gray;">${message}</div>
+
+            <ui-multiline-content-editable
+                .values=${tags.length ? tags :[""]}
+                @change=${e => {
+                    console.log("change", e.detail)
+                }}
+                @add=${e => setTags([
+                    ...tags.slice(0, e.detail.index + 1),
+                    "",
+                    ...tags.slice(e.detail.index + 1)])
+                }
+                @remove=${e => setTags(tags.filter((t,i) => i !== e.detail.index))}
+            ></ui-multiline-content-editable>
 
         </div>
     `;

@@ -1,4 +1,3 @@
-import { LitElement, html, css } from 'lit-element';
 import Dropdownable from "./dropdownable.js"
 
 /**
@@ -31,6 +30,7 @@ export default class Combobox extends Dropdownable {
 
     constructor() {
         super();
+        if (!Array.isArray(this.items)) this.items = [];
         this.addEventListener('change', e => this.changeHandler(e));
         this.addEventListener('submit', e => this.submitHandler(e));
         this.addEventListener('clear', e => this.clearHandler(e));
@@ -47,15 +47,15 @@ export default class Combobox extends Dropdownable {
         // cas si value n'a pas changé mais null, mais items alors il faut
         // initialiser inputValue car items peut avoir un element qui match avec la valeur null
         // ex { label: "aucun", value: null }
-        if (changedProperties.has("items") || changedProperties.has("value")) { 
+        if (changedProperties.has("value")) { 
             this.initInputValue();
         }
         return res;
     }
 
     dropdownSelectHandler(e) {
+        this.inputValue = "";
         super.dropdownSelectHandler(e);
-        this.inputValue = this.getInputValue(e.detail.item);
     }
 
     /**
@@ -96,7 +96,6 @@ export default class Combobox extends Dropdownable {
             item = this.items.filter(e => new RegExp(`^${value}`, "ig").test(this.getInputValue(e))).shift();
         }
         if (item) {
-            this.inputValue = this.getInputValue(item);
             this.dispatchEvent(new CustomEvent("select", {
                 bubbles: true,
                 composed: true,
@@ -109,17 +108,8 @@ export default class Combobox extends Dropdownable {
     }
 
     clearHandler(e) {
-        e.stopPropagation();
         this.inputValue = "";
         this.dropdown = false;
-        this.dispatchEvent(new CustomEvent("select", {
-            bubbles: true,
-            composed: true,
-            detail: {
-                item: null,
-                index: -1
-            }
-        }));
     }
 
     /**
@@ -152,17 +142,6 @@ export default class Combobox extends Dropdownable {
         /**
          * inputValue
          */
-        throw new Error("Not implemented!");
-    }
-
-	/**
-     * Render du composant affichant le dropdown
-     * ex: ui-input
-     */
-    renderDropdown() {
-        /** 
-         * items
-        */
         throw new Error("Not implemented!");
     }
 }

@@ -7,6 +7,7 @@ export default class Modal extends LitElement {
     static get styles() {
         return css`
             dialog {
+                z-index: 1;
                 border: none;
                 border-radius: 4px;
                 box-shadow: 0 0 40px rgba(0,0,0,0.1), 0 0 10px rgba(0,0,0,0.25);

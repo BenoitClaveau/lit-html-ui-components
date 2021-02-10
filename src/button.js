@@ -85,7 +85,6 @@ export default class Button extends LitElement {
         const d = Math.max(this.button.clientWidth, this.button.clientHeight);
         circle.style.width = circle.style.height = d + "px";
         const rect = this.button.getBoundingClientRect();
-        console.log(rect)
         circle.style.left = e.clientX - rect.left - d / 2 + "px";
         circle.style.top = e.clientY - rect.top - d / 2 + "px";
         circle.classList.add("ripple");

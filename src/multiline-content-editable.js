@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 
 /**
- * Cellule contenant plusieurs elememts editables pour gérer des listes
+ * Cellule contenant plusieurs elememts editables pour gï¿½rer des listes
  */
 export default class MultilineContentEditable extends LitElement {
 
@@ -36,13 +36,15 @@ export default class MultilineContentEditable extends LitElement {
     }
 
     /**
-     * Je demande à ajouter un nouvel enfant (editable) lors d'un 
+     * Je demande ï¿½ ajouter un nouvel enfant (editable) lors d'un 
      */
     async submitHandler(e) {
         const path = e.path || (e.composedPath && e.composedPath());
-        if (path[0] === this) return; // Emit par moi-même.
+        if (path[0] === this) return; // Emit par moi-mï¿½me.
+        e.detail.preventDefault();
+        
         const i = path.indexOf(this);
-        const child = path[i-2]; // -2 à cause du shadowRoot (shadowRoot + child = 2)
+        const child = path[i-2]; // -2 ï¿½ cause du shadowRoot (shadowRoot + child = 2)
         const index = [...this.shadowRoot.children].indexOf(child);
         const item = this.values[index];
         this.dispatchEvent(new CustomEvent('add', {
@@ -54,7 +56,7 @@ export default class MultilineContentEditable extends LitElement {
              }
         }));
 
-        // Je donne le focus au bloc du dessous. Il a du être créé.
+        // Je donne le focus au bloc du dessous. Il a du ï¿½tre crï¿½ï¿½.
         await this.updateComplete;
         const elems = [...this.shadowRoot.children];
         const elem = elems[index + 1];
@@ -64,9 +66,9 @@ export default class MultilineContentEditable extends LitElement {
 
     async resetHandler(e) {
         const path = e.path || (e.composedPath && e.composedPath());
-        if (path[0] === this) return; // Emit par moi-même.
+        if (path[0] === this) return; // Emit par moi-mï¿½me.
         const i = path.indexOf(this);
-        const child = path[i-2]; // -2 à cause du shadowRoot (shadowRoot + child = 2)
+        const child = path[i-2]; // -2 ï¿½ cause du shadowRoot (shadowRoot + child = 2)
         const index = [...this.shadowRoot.children].indexOf(child);
         const item = this.values[index];
         this.dispatchEvent(new CustomEvent('remove', {
@@ -78,7 +80,7 @@ export default class MultilineContentEditable extends LitElement {
              }
         }));
 
-        // Je donne le focus au bloc précedent etje met le curseur à la fin de la ligne. 
+        // Je donne le focus au bloc prï¿½cedent etje met le curseur ï¿½ la fin de la ligne. 
         await this.updateComplete;
         const elems = [...this.shadowRoot.children];
         const elem = elems[index - 1];
@@ -89,7 +91,7 @@ export default class MultilineContentEditable extends LitElement {
     }
 
     /**
-     * Le text a été changé
+     * Le text a ï¿½tï¿½ changï¿½
      */
     inputHandler(e) {
         const index = [...this.children].indexOf(e.target);
