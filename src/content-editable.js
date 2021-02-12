@@ -1,21 +1,18 @@
-import { LitElement, html, css } from 'lit-element';
+import { commitSymbol } from "haunted/lib/symbols";
+import { LitElement, html, css } from "lit-element";
 
-/**
- * HACK for bug in firefox:
- * caret is not visible on focus.
- */
-
-// FIREFOX ajoute un /n si vide.
 const sanitize = (str) => {
-    if (!str) return null;
+    if (!str) return "";
     return str.replace(/\r\n|\r|\n/g, "\n").replace(/^\n+$/g, "");
 };
 
 export default class ContentEditable extends LitElement {
-
     static get styles() {
         return css`
             :host {
+                display: grid;
+                grid-template-columns: 1fr;
+
                 border-radius: 4px;
                 -moz-outline-radius: 4px;
 
@@ -46,138 +43,136 @@ export default class ContentEditable extends LitElement {
     }
 
     constructor() {
-        super();
-
-        // this._onblur
-
+        super()
         // FIREFOX HACK je recréé le composant pour éviter le bug du focus
-        this._onblur = e => {
-            this.resetEditable(e.target);
-        }
-
-        // les handlers doivent être copiés dans onblur.Je les déclare comme fonction pour plus de facilté.
-        this._onkeypress = e => {
-            if (e.key == "Enter") {
-                // si j'appelle preventDefault j'annule le keypress
-                // pour ne pas avoir de cr
-                this.dispatchEvent(new CustomEvent('submit', {
-                    bubbles: true,
-                    composed: true,
-                    detail: {
-                        preventDefault: () => e.preventDefault()
-                    }
-                }));
-            }
-        }
-
-        this._onkeyup = e => {
-            const path = e.path || (e.composedPath && e.composedPath());
-            const value = sanitize(path[0].innerText);
-
-            if (value != this.value) {
-                this.dispatchEvent(new CustomEvent('change', {
-                    bubbles: true,
-                    composed: true,
-                    detail: { value }
-                }));
-            }
-
-            if (!this.value && ["Backspace", "Delete"].some(p => e.key === p)) {
-                this.dispatchEvent(new CustomEvent('reset', {
-                    bubbles: true,
-                    composed: true,
-                    detail: { value }
-                }));
-            }
-        };
+        this.addEventListener("blur", e => this.blurHanlder(e));
+        this.addEventListener("keypress", e => this.keypressHanlder(e));
+        this.addEventListener("keyup", e => this.keyupHanlder(e));
     }
 
-    resetEditable(target) {
-        const { _onblur, _onkeypress, _onkeyup } = this;
-        const copy = target.cloneNode(true); // event handler are not clones
-        copy.onblur = _onblur;
-        copy.onkeypress = _onkeypress;
-        copy.onkeyup = _onkeyup;
-        target.parentNode.replaceChild(copy, target);
+    // createRenderRoot() {
+    //     // je délégue la gestion du focus à L'enfant.
+    //     return this.attachShadow({ mode: "open", delegatesFocus: true });
+    // }
+
+    get contentEditable() {
+        return this.shadowRoot.querySelector("[contenteditable=true]");
     }
 
-    createRenderRoot() {
-        // je délégue la gestion du focus à L'enfant.
-        return this.attachShadow({ mode: "open", delegatesFocus: true });
+    get localValue() {
+        const contentEditable = this.contentEditable;
+        if (!contentEditable) return "";
+        return sanitize(contentEditable.innerText);
+    }
+
+    shouldUpdate(changedProperties) {
+        const res = super.shouldUpdate(changedProperties);
+        const out =  res && this.localValue == this.value && this.contentEditable ? false : res;
+        console.log("out", out, this.value)
+        return out;
+    }
+
+    render() {
+        const contentEditable = this.contentEditable;
+        // if (contentEditable) {
+
+        //     console.log("ediable render update value", this.value);
+        //     setTimeout(() => {
+        //         const copy = contentEditable.cloneNode(true);
+        //         copy.style.backgroundColor="green";
+        //         contentEditable.parentNode.replaceChild(copy, contentEditable);
+        //     }, 1000)
+            
+        //     /*
+        //     console.log("REPLACE CHILD", contentEditable.innerText, this.value);
+        //     contentEditable.blur();
+        //     const copy = contentEditable.cloneNode(true);
+        //     // copy.innerHTML = this.value;
+        //     contentEditable.parentNode.replaceChild(copy, contentEditable);
+        //     */
+        //     return super.render();
+        // }
+        console.log("ediable render template")
+        return html`
+            <div contenteditable="true" .textContent=${this.value}></div>
+        `;
+    }
+
+    async focus(options = {}) {
+        const contentEditable = this.contentEditable;
+        if (contentEditable) {
+            contentEditable.focus();
+            if (options.caretToEnd) this.setCaretToEnd();
+            return;
+        }
+
+        await this.updateComplete;
+        this.contentEditable.focus();
+        if (options.caretToEnd) this.setCaretToEnd();
+    }
+
+    blurHanlder(e) {
+        const contentEditable = this.contentEditable;
+        if (contentEditable) {
+            const copy = contentEditable.cloneNode(true);
+            contentEditable.parentNode.replaceChild(copy, contentEditable);
+        }
+    }
+
+    keypressHanlder(e) {
+        if (e.key == "Enter") {
+            // si j'appelle preventDefault j'annule le keypress
+            // pour ne pas avoir de cr
+            this.dispatchEvent(new CustomEvent('submit', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    preventDefault: () => e.preventDefault()
+                }
+            }));
+        }
+    }
+
+    keyupHanlder(e) {
+        const value = this.localValue;
+        if (!value && ["Backspace", "Delete"].some(p => e.key === p)) {
+            this.dispatchEvent(new CustomEvent('reset', {
+                bubbles: true,
+                composed: true,
+                detail: { value }
+            }));
+        }
+        else if (value !== this.value) {
+            console.log("change", value)
+            this.dispatchEvent(new CustomEvent('change', {
+                bubbles: true,
+                composed: true,
+                detail: { value }
+            }));
+        }
     }
 
     // https://gist.github.com/islishude/6ccd1fbf42d1eaac667d6873e7b134f8
-    async getCaretPos() {
-        const elem = await this.getContentEditable();
+    getCaretPos() {
         const selection = document.getSelection();
         if (!selection) return 0;
         const range = selection.getRangeAt(0);
-        range.selectNodeContents(elem);
+        range.selectNodeContents(this.contentEditable);
         range.setEnd(range.endContainer, range.beginOffset);
         return range.startOffset;
     }
 
-    async setCaretPos(pos) {
-        const elem = await this.getContentEditable();
+    setCaretPos(pos) {
         const selection = document.getSelection();
         if (!selection) return;
-        selection.collapse(elem, pos);
+        selection.collapse(this.contentEditable, pos);
     }
 
-    async setCaretToEnd() {
-        const elem = await this.getContentEditable();
+    setCaretToEnd() {
         const selection = document.getSelection();
         if (!selection) return;
         const range = selection.getRangeAt(0);
-        range.selectNodeContents(elem);
+        range.selectNodeContents(this.contentEditable);
         range.collapse(false);
-    }
-
-    async getContentEditable() {
-        const div = this.shadowRoot.querySelector("[contenteditable=true]");
-        if (div) return div;
-        await this.updateComplete;
-        return this.shadowRoot.querySelector("[contenteditable=true]");
-    }
-
-    async focus() {
-        super.focus();
-        (await this.getContentEditable()).focus();
-    }
-
-    /**
-     * Si this.value est identique à contentediable, je ne fais rien pour 
-     * ne pas réinitialiser le composant editable et la position du curseur.
-     * cf https://stackoverflow.com/questions/22677931/react-js-onchange-event-for-contenteditable
-     */
-    shouldUpdate(changedProperties) {
-        const res = super.shouldUpdate(changedProperties);
-        return res && sanitize(this.localValue) == this.value ? false : res;
-    }
-
-    /**
-     * Retourne value du conteneditable
-     */
-    get localValue() {
-        const div = this.shadowRoot.querySelector("[contenteditable=true]");
-        return !div ?
-            null :
-            div.innerText;
-    }
-
-    render() {
-        const div = this.shadowRoot.querySelector("[contenteditable=true]");
-        if (div) {
-            // reset iternal state of div.contenteditable="true"
-            resetEditable(div);
-        } 
-        const { _onblur, _onkeypress, _onkeyup } = this;
-        return html`
-            <div 
-                contenteditable="true" 
-                @blur=${_onblur} 
-                @keypress=${_onkeypress} 
-                @keyup=${_onkeyup}>${this.value}</div>
-        `;
     }
 }

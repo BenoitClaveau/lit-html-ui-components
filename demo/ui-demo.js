@@ -43,18 +43,17 @@ customElements.define("ui-dialog", class extends Dialog {
     renderBody() {
         return html`
         <div class="grid">
-            <ui-button @click=${e => this.close({ selected: "item 1"})}>item 1</ui-button>
-            <ui-button @click=${e => this.close({ selected: "item 2"})}>item 2</ui-button>
-            <ui-button @click=${e => this.close({ selected: "item 3"})}>item 3</ui-button>
-            <ui-button @click=${e => this.close({ selected: "item 4"})}>item 4</ui-button>
-            <ui-button @click=${e => this.close({ selected: "item 5"})}>item 5</ui-button>
+            <ui-button @click=${e=> this.close({ selected: "item 1" })}>item 1</ui-button>
+            <ui-button @click=${e=> this.close({ selected: "item 2" })}>item 2</ui-button>
+            <ui-button @click=${e=> this.close({ selected: "item 3" })}>item 3</ui-button>
+            <ui-button @click=${e=> this.close({ selected: "item 4" })}>item 4</ui-button>
+            <ui-button @click=${e=> this.close({ selected: "item 5" })}>item 5</ui-button>
         </div>`
     }
     renderFooter() {
         return html`
-            <ui-button
-                @click=${e => this.close({ cancel: true })}
-            >ANNULER</ui-button>
+            <ui-button @click=${e=> this.close({ cancel: true })}
+                >ANNULER</ui-button>
         `
     }
 });
@@ -83,21 +82,15 @@ customElements.define("ui-combobox", class extends Combobox {
 
     renderDropdown() {
         return html`
-            <ui-combobox-dropdown
-                .items=${this.items}
-                .dropdown="${this.dropdown}"
-                .renderItem=${(item, index, isActive) => html`<div>${item.label} (${item.code})</div>`}
-            ></ui-combobox-dropdown>
+            <ui-combobox-dropdown .items=${this.items} .dropdown="${this.dropdown}" .renderItem=${(item, index, isActive)=> html`
+                <div>${item.label} (${item.code})</div>`}
+                ></ui-combobox-dropdown>
         `
     }
 
     renderInput() {
         return html`
-            <ui-input-combobox
-                placeholder="Role"
-                .value="${this.inputValue}"
-                .dropdown="${this.dropdown}"
-            ></ui-input-combobox>
+            <ui-input-combobox placeholder="Role" .value="${this.inputValue}" .dropdown="${this.dropdown}"></ui-input-combobox>
         `
     }
 });
@@ -115,20 +108,15 @@ customElements.define("ui-autocomplete", class extends Autocomplete {
 
     renderDropdown() {
         return html`
-            <ui-combobox-dropdown
-                .items=${this.items}
-                .dropdown="${this.dropdown}"
-                .renderItem=${(item, index, isActive) => html`<div>${item}</div>`}
-            ></ui-combobox-dropdown>
+            <ui-combobox-dropdown .items=${this.items} .dropdown="${this.dropdown}" .renderItem=${(item, index, isActive)=> html`
+                <div>${item}</div>`}
+                ></ui-combobox-dropdown>
         `
     }
 
     renderInput() {
         return html`
-            <ui-input
-                placeholder="Texte"
-                .value="${this.inputValue}"
-            ></ui-input>
+            <ui-input placeholder="Texte" .value="${this.inputValue}"></ui-input>
         `
     }
 
@@ -163,53 +151,45 @@ customElements.define("ui-tags", class extends Tags {
 
     renderDropdown() {
         return html`
-            <ui-combobox-dropdown
-                .items=${this.items}
-                .dropdown="${this.dropdown}"
-                .renderItem=${(item, index, isActive) => html`<div>${item}</div>`}
-            ></ui-combobox-dropdown>
+            <ui-combobox-dropdown .items=${this.items} .dropdown="${this.dropdown}" .renderItem=${(item, index, isActive)=> html`
+                <div>${item}</div>`}
+                ></ui-combobox-dropdown>
         `
     }
 
     renderInput() {
         return html`
-            <ui-input-combobox
-                placeholder="Role"
-                .value="${this.inputValue}"
-                .dropdown="${this.dropdown}"
-            ></ui-input-combobox>
+            <ui-input-combobox placeholder="Role" .value="${this.inputValue}" .dropdown="${this.dropdown}"></ui-input-combobox>
         `
     }
     renderTag(e) {
         return html`
-            <touchable-highlight 
+            <touchable-highlight
                 style="display: inline-flex; --padding:4px ; margin: 0 8px 8px 0; background-color: burlywood; border-radius: 4px;"
-                @click="${() => this.remove(e)}"
-            >
+                @click="${() => this.remove(e)}">
                 ${e}
                 ${svgClose({ width: 14, height: 14 })}
             </touchable-highlight>
         `
     }
-    
+
     fetch(e) {
         const { value } = e.detail;
-        this.items = value ? this.VALUES.filter(e => new RegExp(`^${value}`, "ig").test(e)): this.VALUES;
+        this.items = value ? this.VALUES.filter(e => new RegExp(`^${value}`, "ig").test(e)) : this.VALUES;
     }
 });
 
 
 customElements.define('ui-multiline-content-editable', class extends MulilineContentEditable {
     renderItem(item, index) {
+        console.log("RENDER", index, item)
         return html`
-            <ui-content-editable
-                .value=${item}
-            ></ui-content-editable>
+            <ui-content-editable value=${item} date=${new Date(Date.now())}></ui-content-editable>
         `;
     }
 });
 
-customElements.define("ui-demo", component(function() {
+customElements.define("ui-demo", component(function () {
 
     const [count, setCount] = useState(0);
     const [text, setText] = useState("");
@@ -261,11 +241,11 @@ customElements.define("ui-demo", component(function() {
 
             <ui-button
                 @click=${async e => {
-                    const res = await this.shadowRoot.querySelector("ui-dialog").showModal();
-                    if (res.selected) {
-                        alert(`You have selected: ${res.selected}`);
-                    }
-                }}
+            const res = await this.shadowRoot.querySelector("ui-dialog").showModal();
+            if (res.selected) {
+                alert(`You have selected: ${res.selected}`);
+            }
+        }}
             >SHOW MODAL</ui-button>
             
             <ui-dialog
@@ -293,25 +273,34 @@ customElements.define("ui-demo", component(function() {
                 @submit=${e => setTags([...new Set(tags).add(e.detail.item)])}
             ></ui-tags>
 
-            
-            <ui-content-editable
-                .value=${message}
-                @change=${e => setMessage(e.detail.value)}
-            ></ui-content-editable>
+            <div>
+                <ui-content-editable
+                    .value=${message}
+                    @change=${e => setMessage(e.detail.value)}
+                ></ui-content-editable>
+            </div>
 
             <div style="border: 1px dotted gray;">${message}</div>
 
             <ui-multiline-content-editable
-                .values=${tags.length ? tags :[""]}
+                .values=${tags}
                 @change=${e => {
-                    console.log("change", e.detail)
+                    console.log("before change", tags)
+                    const t = tags.map((o, i) => i === e.detail.index ? e.detail.value : o)
+                    console.log("after change", t)
+                    setTags(t)
                 }}
                 @add=${e => setTags([
-                    ...tags.slice(0, e.detail.index + 1),
+                    ...tags.slice(0, e.detail.index),
                     "",
-                    ...tags.slice(e.detail.index + 1)])
+                    ...tags.slice(e.detail.index)])
                 }
-                @remove=${e => setTags(tags.filter((t,i) => i !== e.detail.index))}
+                @remove=${e => {
+                     console.log("before remove", tags, e.detail.index)
+                     const t = tags.filter((t, i) => i !== e.detail.index)
+                     console.log("after remove", t)
+                     setTags(t)
+                    }}
             ></ui-multiline-content-editable>
 
         </div>

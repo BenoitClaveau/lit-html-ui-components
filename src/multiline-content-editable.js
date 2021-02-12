@@ -1,15 +1,15 @@
 import { LitElement, html, css } from 'lit-element';
+import { repeat } from 'lit-html/directives/repeat.js';
+import { render } from 'lit-html/lit-html.js';
 
-/**
- * Cellule contenant plusieurs elememts editables pour g�rer des listes
- */
 export default class MultilineContentEditable extends LitElement {
 
     static get styles() {
         return css`
             :host {
-                display: flex;
-                flex-direction: column;
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-row-gap: 4px;
             }
         `;
     }
@@ -20,92 +20,124 @@ export default class MultilineContentEditable extends LitElement {
         }
     }
 
-    constructor() {
-        super();
-        this.addEventListener("submit", e => this.submitHandler(e))
-        this.addEventListener("reset", e => this.resetHandler(e))
-        this.addEventListener("input", e => this.inputHandler(e))
-    }
-    
-    render() {
-        return html`${this.values.map((item, i) => this.renderItem(item, i))}`
+    createRenderRoot() {
+        // BUG dans firefox. ne pas utiliser shadowRoot
+        return this;
     }
 
-    renderItem(item, index) {
-        throw new Error("Not implemented!");
+    shouldUpdate(changedProperties) {
+        if (!this.values.length) {
+            this.dispatchEvent(new CustomEvent('add', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    index: 0
+                }
+            }));
+            return false
+        }
+        return super.shouldUpdate(changedProperties);
     }
 
-    /**
-     * Je demande � ajouter un nouvel enfant (editable) lors d'un 
-     */
-    async submitHandler(e) {
-        const path = e.path || (e.composedPath && e.composedPath());
-        if (path[0] === this) return; // Emit par moi-m�me.
-        e.detail.preventDefault();
-        
-        const i = path.indexOf(this);
-        const child = path[i-2]; // -2 � cause du shadowRoot (shadowRoot + child = 2)
-        const index = [...this.shadowRoot.children].indexOf(child);
-        const item = this.values[index];
-        this.dispatchEvent(new CustomEvent('add', {
-            bubbles: true,
-            composed: true,
-            detail: { 
-                index,
-                item
-             }
-        }));
+    keypress = (e, item, index) => {
+        const { list } = this;
+        if (e.key == "Enter") {
+            e.preventDefault();
 
-        // Je donne le focus au bloc du dessous. Il a du �tre cr��.
-        await this.updateComplete;
-        const elems = [...this.shadowRoot.children];
-        const elem = elems[index + 1];
-        if (!elem) return;
-        await elem.focus();
+            this.dispatchEvent(new CustomEvent('add', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    index: index + 1
+                }
+            }));
+        }
+        if (e.key == "-") {
+            e.preventDefault();
+
+            console.log("- remove", index)
+            this.dispatchEvent(new CustomEvent('remove', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    index,
+                }
+            }));
+        }
+
     }
 
-    async resetHandler(e) {
-        const path = e.path || (e.composedPath && e.composedPath());
-        if (path[0] === this) return; // Emit par moi-m�me.
-        const i = path.indexOf(this);
-        const child = path[i-2]; // -2 � cause du shadowRoot (shadowRoot + child = 2)
-        const index = [...this.shadowRoot.children].indexOf(child);
-        const item = this.values[index];
-        this.dispatchEvent(new CustomEvent('remove', {
-            bubbles: true,
-            composed: true,
-            detail: { 
-                index,
-                item
-             }
-        }));
+    keyup = (e, item, index) => {
+        if (["Enter", "-"].some(k => k == e.key)) return;
 
-        // Je donne le focus au bloc pr�cedent etje met le curseur � la fin de la ligne. 
-        await this.updateComplete;
-        const elems = [...this.shadowRoot.children];
-        const elem = elems[index - 1];
-        if (!elem) return;
-        await elem.focus();
-        console.log("set caret to end")
-        await elem.setCaretToEnd();
-    }
-
-    /**
-     * Le text a �t� chang�
-     */
-    inputHandler(e) {
-        const index = [...this.children].indexOf(e.target);
-        const item = this.values[index];
-        const path = e.path || (e.composedPath && e.composedPath());
-        const value = path[0].innerText;
         this.dispatchEvent(new CustomEvent('change', {
             bubbles: true,
             composed: true,
             detail: { 
                 index,
                 item,
-                value
+                value: e.target.textContent,
              }
         }));
+    }
+
+    domRender() {
+        while (this.firstChild) {
+            this.removeChild(this.firstChild);
+        }
+
+        for (let i = 0; i < this.values.length; i++) {
+            const item = this.values[i];
+            const blur = (e) => {
+                const p = document.createElement("p");
+                p.contentEditable = true;
+                p.textContent = e.target.textContent;
+                p.style.backgroundColor = "blue";
+                p.style.padding = "8px";
+                p.addEventListener("keydown", keypress);
+                p.addEventListener("keyup", keyup);
+                p.addEventListener("blur", blur);
+                this.replaceChild(p, e.target);
+            }
+            const keypress = (e) => {
+                this.keypress(e, item, i)
+            }
+            const keyup = (e) => {
+                this.keyup(e, item, i)
+            }
+            
+            const p = document.createElement("p");
+            p.style.backgroundColor = "red";
+            p.style.padding = "8px";
+            p.contentEditable = true;
+            p.textContent = item;
+            p.addEventListener("keydown", keypress);
+            p.addEventListener("keyup", keyup);
+            p.addEventListener("blur", blur);
+            this.appendChild(p);
+        }
+
+        const p = document.createElement("p");
+        p.contentEditable = true;
+        p.textContent = "";
+        p.style.outline = "none"
+        this.appendChild(p);
+        p.focus();
+        requestAnimationFrame(() =>  {
+            p.remove();
+        })
+
+    }
+
+    firstUpdated() {
+        this.domRender()
+    }
+
+    updated(updatedProperties) {
+        if (this.children.length != this.values.length) {
+
+            console.log("RENDER", this)
+            this.domRender()
+        }
     }
 }
