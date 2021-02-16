@@ -73,26 +73,6 @@ export default class ContentEditable extends LitElement {
     }
 
     render() {
-        const contentEditable = this.contentEditable;
-        // if (contentEditable) {
-
-        //     console.log("ediable render update value", this.value);
-        //     setTimeout(() => {
-        //         const copy = contentEditable.cloneNode(true);
-        //         copy.style.backgroundColor="green";
-        //         contentEditable.parentNode.replaceChild(copy, contentEditable);
-        //     }, 1000)
-            
-        //     /*
-        //     console.log("REPLACE CHILD", contentEditable.innerText, this.value);
-        //     contentEditable.blur();
-        //     const copy = contentEditable.cloneNode(true);
-        //     // copy.innerHTML = this.value;
-        //     contentEditable.parentNode.replaceChild(copy, contentEditable);
-        //     */
-        //     return super.render();
-        // }
-        console.log("ediable render template")
         return html`
             <div contenteditable="true" .textContent=${this.value}></div>
         `;

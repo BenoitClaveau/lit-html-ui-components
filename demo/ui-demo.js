@@ -290,17 +290,21 @@ customElements.define("ui-demo", component(function () {
                     console.log("after change", t)
                     setTags(t)
                 }}
-                @add=${e => setTags([
-                    ...tags.slice(0, e.detail.index),
-                    "",
-                    ...tags.slice(e.detail.index)])
-                }
+                @add=${e => {
+                    setTags([
+                        ...tags.slice(0, e.detail.index),
+                        "",
+                        ...tags.slice(e.detail.index)
+                    ]);
+                    e.detail.focus(e.detail.index);
+                }}
                 @remove=${e => {
                      console.log("before remove", tags, e.detail.index)
                      const t = tags.filter((t, i) => i !== e.detail.index)
                      console.log("after remove", t)
-                     setTags(t)
-                    }}
+                     setTags(t);
+                     e.detail.focus(e.detail.index - 1);
+                }}
             ></ui-multiline-content-editable>
 
         </div>
