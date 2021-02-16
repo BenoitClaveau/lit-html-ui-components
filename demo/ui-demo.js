@@ -1,18 +1,17 @@
 import { LitElement, html, css } from "lit-element";
-import "../ui-button.js";
-import "../ui-checkbox.js";
-import "../ui-text.js";
-import "../ui-input.js";
-import "../ui-input-combobox.js";
-import "../ui-combobox-dropdown.js";
-import "../ui-input-date.js";
 import "../touchable-highlight.js";
-import "../ui-content-editable.js";
 import { close as svgClose } from "../src/icons";
+import Button from "../src/button.js";
+import Checkbox from "../src/checkbox.js";
+import Input from "../src/input.js";
+import InputDate from "../src/input-date.js";
+import InputCombobox from "../src/input-combobox.js";
 import Dialog from "../src/dialog.js";
 import Combobox from "../src/combobox.js";
+import Dropdown from "../src/dropdown.js";
 import Autocomplete from "../src/autocomplete.js";
 import Tags from "../src/tags.js";
+import Text from "../src/text.js";
 import MulilineContentEditable from "../src/multiline-content-editable.js";
 
 import {
@@ -21,9 +20,39 @@ import {
     component
 } from 'haunted';
 
-/**
- * Extends Dialog to define body
- */
+customElements.define('ui-button', class extends Button {
+    static get styles() {
+        return [
+            super.styles,
+            css`
+                #button {
+                    min-height: 36px;
+                    background-color: #f0f0f0;
+                    color: #000;
+                    border-radius: 4px;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                }
+            `
+        ];
+    }
+});
+
+customElements.define('ui-checkbox', class extends Checkbox {
+    static get styles() {
+        return css`
+            host: {
+                font-family: Roboto;
+                font-weight: 400;
+            }
+        `;
+    }
+});
+
+customElements.define('ui-input', Input);
+customElements.define('ui-input-date', InputDate);
+customElements.define('ui-text', Text);
+
 customElements.define("ui-dialog", class extends Dialog {
     static get styles() {
         return [
@@ -58,9 +87,17 @@ customElements.define("ui-dialog", class extends Dialog {
     }
 });
 
-/**
- * Adapt Combobox to your data
- */
+customElements.define('ui-input-combobox', InputCombobox);
+
+customElements.define('ui-combobox-dropdown', class extends Dropdown {
+    static get properties() {
+        return {
+            ...super.properties,
+            renderItem: Function
+        }
+    }
+});
+
 customElements.define("ui-combobox", class extends Combobox {
 
     get items() {
@@ -84,7 +121,7 @@ customElements.define("ui-combobox", class extends Combobox {
         return html`
             <ui-combobox-dropdown .items=${this.items} .dropdown="${this.dropdown}" .renderItem=${(item, index, isActive)=> html`
                 <div>${item.label} (${item.code})</div>`}
-                ></ui-combobox-dropdown>
+            ></ui-combobox-dropdown>
         `
     }
 
@@ -110,7 +147,7 @@ customElements.define("ui-autocomplete", class extends Autocomplete {
         return html`
             <ui-combobox-dropdown .items=${this.items} .dropdown="${this.dropdown}" .renderItem=${(item, index, isActive)=> html`
                 <div>${item}</div>`}
-                ></ui-combobox-dropdown>
+            ></ui-combobox-dropdown>
         `
     }
 
@@ -153,7 +190,7 @@ customElements.define("ui-tags", class extends Tags {
         return html`
             <ui-combobox-dropdown .items=${this.items} .dropdown="${this.dropdown}" .renderItem=${(item, index, isActive)=> html`
                 <div>${item}</div>`}
-                ></ui-combobox-dropdown>
+            ></ui-combobox-dropdown>
         `
     }
 
@@ -241,11 +278,11 @@ customElements.define("ui-demo", component(function () {
 
             <ui-button
                 @click=${async e => {
-            const res = await this.shadowRoot.querySelector("ui-dialog").showModal();
-            if (res.selected) {
-                alert(`You have selected: ${res.selected}`);
-            }
-        }}
+                    const res = await this.shadowRoot.querySelector("ui-dialog").showModal();
+                    if (res.selected) {
+                        alert(`You have selected: ${res.selected}`);
+                    }
+                }}
             >SHOW MODAL</ui-button>
             
             <ui-dialog
@@ -272,15 +309,6 @@ customElements.define("ui-demo", component(function () {
                 @select=${e => setTags([...new Set(tags).add(e.detail.item)])}
                 @submit=${e => setTags([...new Set(tags).add(e.detail.item)])}
             ></ui-tags>
-
-            <div>
-                <ui-content-editable
-                    .value=${message}
-                    @change=${e => setMessage(e.detail.value)}
-                ></ui-content-editable>
-            </div>
-
-            <div style="border: 1px dotted gray;">${message}</div>
 
             <ui-multiline-content-editable
                 .values=${tags}

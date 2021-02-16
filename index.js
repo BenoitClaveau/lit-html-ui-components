@@ -1,4 +1,3 @@
-export { default as Iconset } from './src/iconset.js';
 export { default as Button } from './src/button.js';
 export { default as Dropdownable } from './src/dropdownable.js';
 export { default as Combobox } from './src/combobox.js';
@@ -9,9 +8,6 @@ export { default as ContentEditable } from './src/content-editable.js';
 export { default as MultilineContentEditable } from './src/multiline-content-editable.js';
 export { default as InputCombobox } from './src/input-combobox.js';
 export { default as Checkbox } from './src/checkbox.js';
-export { default as SvgCheckbox } from './src/svg-checkbox.js';
-export { default as Field } from './src/field.js';
 export { default as Dropdown } from './src/dropdown.js';
 export { default as Modal } from './src/modal.js';
 export { default as Dialog } from './src/dialog.js';
-export { default as ButtonDialog } from './src/button-dialog.js';
