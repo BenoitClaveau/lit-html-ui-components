@@ -1,7 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { repeat } from 'lit-html/directives/repeat.js';
 import { render } from 'lit-html/lit-html.js';
-import { TemplateInstance } from 'lit-html/lib/template-instance';
 
 export default class MultilineContentEditable extends LitElement {
 

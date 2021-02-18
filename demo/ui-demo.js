@@ -20,6 +20,23 @@ import {
     component
 } from 'haunted';
 
+let VALUES = [
+    "entrée",
+    "plat",
+    "garniture",
+    "laitage",
+    "dessert",
+    "goûter",
+    "crudités",
+    "salade composée",
+    "féculent",
+    "légumes",
+    "légumineux",
+    "potage",
+    "charcuterie",
+    "volaille"
+]
+
 customElements.define('ui-button', class extends Button {
     static get styles() {
         return [
@@ -165,23 +182,6 @@ customElements.define("ui-autocomplete", class extends Autocomplete {
 
 customElements.define("ui-tags", class extends Tags {
 
-    VALUES = [
-        "entrée",
-        "plat",
-        "garniture",
-        "laitage",
-        "dessert",
-        "goûter",
-        "crudités",
-        "salade composée",
-        "féculent",
-        "légumes",
-        "légumineux",
-        "potage",
-        "charcuterie",
-        "volaille"
-    ]
-
     getInputValue(item) {
         return item;
     }
@@ -212,19 +212,12 @@ customElements.define("ui-tags", class extends Tags {
 
     fetch(e) {
         const { value } = e.detail;
-        this.items = value ? this.VALUES.filter(e => new RegExp(`^${value}`, "ig").test(e)) : this.VALUES;
+        this.items = value ? VALUES.filter(e => new RegExp(`^${value}`, "ig").test(e)) : VALUES;
     }
 });
 
 
-customElements.define('ui-multiline-content-editable', class extends MulilineContentEditable {
-    renderItem(item, index) {
-        console.log("RENDER", index, item)
-        return html`
-            <ui-content-editable value=${item} date=${new Date(Date.now())}></ui-content-editable>
-        `;
-    }
-});
+customElements.define('ui-multiline-content-editable', MulilineContentEditable);
 
 customElements.define("ui-demo", component(function () {
 
@@ -234,6 +227,8 @@ customElements.define("ui-demo", component(function () {
     const [tags, setTags] = useState([]);
     const [message, setMessage] = useState("content editable");
 
+    const [values, setValues] = useState([...VALUES]);
+    console.log("values", values)
     return html`
         <style>
             .grid {
@@ -288,6 +283,19 @@ customElements.define("ui-demo", component(function () {
             <ui-dialog
                 .open=${count > 0 ? 0 : count}
             ></ui-dialog>
+
+            <select>
+                <option>Invité</option>
+                <option>Créateur</option>
+                <option>Observateur</option>
+            </select>
+
+            <input list="values" @change=${function(e){
+                setValues([this.value + "1", this.value + "2", this.value + "3"])
+            }}/>
+            <datalist id="values">
+                ${values.map(e => html`<option value=${e}></option>`)}
+            </datalist>
 
             <ui-combobox
                 .value=${role?.label}
