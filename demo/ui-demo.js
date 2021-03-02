@@ -1,4 +1,5 @@
-import { LitElement, html, css } from "lit-element";
+// import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from 'https://unpkg.com/lit-element?module'
 import "../touchable-highlight.js";
 import { close as svgClose } from "../src/icons";
 import Button from "../src/button.js";
