@@ -1,2 +1,4 @@
 # lit-html-ui-components
-[demo](https://stackblitz.com/edit/lit-html-ui-components?file=src/ui-demo.js)
+[stackblitz demo](https://stackblitz.com/edit/lit-html-ui-components?file=src/ui-demo.js)
+
+[github demo](https://benoitclaveau.github.io/lit-html-ui-components)
