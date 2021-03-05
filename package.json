@@ -1,7 +1,7 @@
 {
   "name": "lit-html-ui-components",
-  "version": "0.0.34",
-  "description": "UI components for React Native",
+  "version": "0.1.0",
+  "description": "Create and style your own lit-element toolkit.",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -20,8 +20,6 @@
   },
   "homepage": "https://github.com/BenoitClaveau/lit-html-ui-components#readme",
   "dependencies": {
-    "@polymer/iron-icon": "latest",
-    "@polymer/iron-icons": "latest",
     "dialog-polyfill": "^0.5.6",
     "lit-element": "latest",
     "lit-html": "latest"
@@ -31,6 +29,7 @@
   },
   "devDependencies": {
     "@web/dev-server": "latest",
-    "haunted": "latest"
+    "haunted": "latest",
+    "web-dev-server": "^3.0.22"
   }
 }

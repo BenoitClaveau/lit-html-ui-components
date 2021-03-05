@@ -1,8 +1,0 @@
-stages:
-  - pages
-
-pages:
-  stage: pages
-  artifacts:
-    paths:
-      - demo

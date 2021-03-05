@@ -1,5 +1,4 @@
-// import { LitElement, html, css } from "lit-element";
-import { LitElement, html, css } from 'https://unpkg.com/lit-element?module'
+import { LitElement, html, css } from "lit-element";
 import "../touchable-highlight.js";
 import { close as svgClose } from "../src/icons";
 import Button from "../src/button.js";
@@ -229,7 +228,6 @@ customElements.define("ui-demo", component(function () {
     const [message, setMessage] = useState("content editable");
 
     const [values, setValues] = useState([...VALUES]);
-    console.log("values", values)
     return html`
         <style>
             .grid {
@@ -292,7 +290,7 @@ customElements.define("ui-demo", component(function () {
             </select>
 
             <input list="values" @change=${function(e){
-                setValues([this.value + "1", this.value + "2", this.value + "3"])
+                setValues([this.value + " 1", this.value + " 2", this.value + " 3"])
             }}/>
             <datalist id="values">
                 ${values.map(e => html`<option value=${e}></option>`)}

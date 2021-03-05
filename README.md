@@ -1,3 +1,2 @@
 # lit-html-ui-components
-
-(Demo)[]
+[demo](https://stackblitz.com/edit/lit-html-ui-components?file=src/ui-demo.js)
